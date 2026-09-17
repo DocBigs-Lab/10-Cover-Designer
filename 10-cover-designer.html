@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10" Cover-Designer · 10-Zoll-Rack</title>
+<style>
+:root{
+--bg:#0f1319; --panel:#151b25; --panel2:#1b2331; --line:#29354a; --txt:#dbe3f0; --muted:#8695ad; --acc:#4da3ff; --acc-soft:#245285;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);
+font:14px/1.45 system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;
+background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header .logo{text-decoration:none;flex:0 0 auto;display:flex;align-items:center}
+header .logo img{height:46px;width:auto;display:block}
+header .logo .logotxt{display:none;font-weight:800;font-size:20px;color:#6fe8ff;letter-spacing:.5px}
+#langSwitch{margin-left:auto;flex:0 0 auto;display:flex;gap:0;border:1px solid var(--line);
+border-radius:8px;overflow:hidden}
+#langSwitch button{padding:6px 12px;background:rgba(21,27,37,.9);border:0;color:var(--muted);
+cursor:pointer;font-size:12.5px;font-weight:600}
+#langSwitch button.on{background:var(--acc-soft);color:#fff}
+header h1{font-size:16px;margin:0;font-weight:650}
+header .sub{color:var(--muted);font-size:12px}
+main{flex:1;display:flex;min-height:0}
+#controls{width:368px;flex:0 0 368px;overflow-y:auto;background:var(--panel);
+border-right:1px solid var(--line);padding:12px 14px 30px}
+fieldset{border:1px solid var(--line);border-radius:10px;margin:10px 0;
+padding:10px 12px 12px;background:var(--panel2);min-width:0}
+legend{padding:0 8px;color:var(--acc);font-weight:650;font-size:11.5px;
+letter-spacing:.06em;text-transform:uppercase}
+.row{display:flex;gap:8px;align-items:center;margin:7px 0}
+.row>label{flex:0 0 128px;color:var(--muted);font-size:12.5px}
+.row .val{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+input[type=number]{width:80px;background:#0c1017;border:1px solid var(--line);
+color:var(--txt);border-radius:6px;padding:5px 7px;font-size:13px}
+input[type=range]{flex:1;accent-color:var(--acc);min-width:50px}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--acc)}
+select{background:#0c1017;border:1px solid var(--line);color:var(--txt);
+border-radius:6px;padding:5px 7px;font-size:13px}
+.seg{display:flex;width:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg.wrap{flex-wrap:wrap}
+.seg.wrap button{flex:1 1 33%}
+.seg.wrap button:nth-child(n+4){border-top:1px solid var(--line)}
+.seg button{flex:1;padding:7px 6px;background:transparent;color:var(--muted);
+border:0;cursor:pointer;font-size:12.5px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--acc-soft);color:#fff}
+.addrow{display:flex;gap:6px;margin:4px 0 8px;flex-wrap:wrap}
+button{font-family:inherit}
+.addbtn{background:#0c1017;border:1px dashed var(--line);color:var(--txt);
+border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12.5px}
+.addbtn:hover{border-color:var(--acc);color:var(--acc)}
+.cutout{border:1px solid var(--line);border-radius:8px;padding:7px 8px;
+margin:8px 0;background:#0c1017}
+.co-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.co-type{font-size:12px;font-weight:650;color:var(--acc);width:68px}
+.f{display:flex;align-items:center;gap:4px}
+.f span{color:var(--muted);font-size:11px}
+.f input{width:60px;background:#10151f;border:1px solid var(--line);color:var(--txt);
+border-radius:5px;padding:3px 5px;font-size:12.5px}
+.del{margin-left:auto;background:transparent;border:0;color:var(--muted);
+cursor:pointer;font-size:14px}
+.del:hover{color:#ff6b6b}
+.dup{margin-left:auto;background:transparent;border:0;color:var(--muted);
+cursor:pointer;font-size:14px}
+.dup:hover{color:var(--acc)}
+.dup + .del{margin-left:2px}
+.f-orient{background:#10151f;border:1px solid var(--line);color:var(--txt);
+border-radius:5px;padding:3px 8px;font-size:13px;cursor:pointer}
+.f-orient:hover{border-color:var(--acc)}
+textarea.co-pts{width:100%;margin-top:6px;background:#10151f;border:1px solid var(--line);
+color:var(--txt);border-radius:6px;padding:5px 6px;
+font:12px ui-monospace,Consolas,monospace}
+.hint{color:var(--muted);font-size:11.5px;margin:6px 0 0}
+#viewport{flex:1;position:relative;min-width:0;min-height:0}
+#view3d{position:absolute;inset:0}
+#view2d{position:absolute;inset:0;display:none;background:#0b0e14;padding:16px}
+#svg2d{width:100%;height:100%;display:block}
+#svg2d text{fill:#7f8ca6;font-family:system-ui,sans-serif;font-size:10px}
+.co-drag{cursor:move;touch-action:none;fill-opacity:.18;stroke-width:0.6;stroke-dasharray:2,1.4}
+.co-drag.co-ok{fill:#4da3ff;stroke:#4da3ff}
+.co-drag.co-bad{fill:#ff6b6b;stroke:#ff6b6b}
+.co-drag:hover{fill-opacity:.32}
+.co-drag.dragging{fill-opacity:.4}
+.tabs{position:absolute;top:12px;left:12px;z-index:5;display:flex;gap:6px}
+.tab{padding:6px 16px;border-radius:8px;background:rgba(21,27,37,.9);
+border:1px solid var(--line);color:var(--muted);cursor:pointer;font-size:13px}
+.tab.on{background:var(--acc-soft);border-color:var(--acc);color:#fff}
+#viewHomeBtn{margin-left:8px}
+#viewHomeBtn:hover{color:#fff;border-color:var(--acc)}
+#info{position:absolute;bottom:12px;left:12px;right:12px;z-index:5;
+display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.chip{background:rgba(21,27,37,.88);border:1px solid var(--line);padding:4px 10px;
+border-radius:8px;font-size:12px;color:var(--muted);pointer-events:auto}
+.chip.warn{color:#ffd166;border-color:#5c4a1f;display:inline-flex;align-items:center;gap:8px}
+.chip.warn .chip-close{background:transparent;border:0;color:inherit;cursor:pointer;
+font-size:13px;line-height:1;padding:0;opacity:.75}
+.chip.warn .chip-close:hover{opacity:1}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+background:#1f2a3a;border:1px solid var(--acc);color:var(--txt);
+padding:9px 18px;border-radius:10px;opacity:0;transition:opacity .25s;
+pointer-events:none;z-index:50;font-size:13px;max-width:80vw}
+#toast.show{opacity:1}
+footer{padding:6px 16px;border-top:1px solid var(--line);color:var(--muted);
+font-size:11.5px;background:var(--panel)}
+footer a{text-decoration:none}
+footer a:hover{text-decoration:underline}
+@media (max-width:880px){
+main{flex-direction:column}
+#controls{width:100%;flex:0 0 auto;max-height:46vh;border-right:0;border-top:1px solid var(--line)}
+#viewport{flex:1;min-height:50vh}
+}
+</style>
+</head>
+<body>
+<header>
+<a class="logo" href="https://docbigs-lab.de/10-cover-designer.html" target="_blank" rel="noopener" title="DocBigslab">
+<img src="logo.png" alt="DocBigslab" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+<span class="logotxt">DocBigslab</span>
+</a>
+<h1>10" Cover-Designer</h1>
+<span class="sub" data-i18n="headerSub">10-Zoll-Rack · 0,5 – 6 U · Blank / Hexagon / Langlöcher / Ausschnitte · Export STL & DXF</span>
+<div id="langSwitch">
+<button data-lang="de">DE</button><button data-lang="en">EN</button>
+</div>
+</header>
+<main>
+<aside id="controls">
+<fieldset>
+<legend data-i18n="legSize">Größe & Material</legend>
+<div class="row"><label data-i18n="lblSizeMode">Modus</label><div class="val"><div class="seg" id="sizeModeSeg">
+<button data-v="rack" data-i18n="modeRack">10"-Rack</button><button data-v="free" data-i18n="modeFree">Frei</button>
+</div></div></div>
+<div class="row" id="sizeURow"><label data-i18n="lblSizeU">Größe (U)</label><div class="val"><select id="sizeU"></select></div></div>
+<div class="row" id="panelHeightRow"><label data-i18n="lblPanelHeight">Höhe</label><div class="val"><input type="number" id="panelHeight" step="1" min="10" max="1000"> mm</div></div>
+<div class="row"><label data-i18n="lblPanelWidth">Plattenbreite</label><div class="val"><input type="number" id="panelWidth" step="1" min="100" max="300"> mm</div></div>
+<div class="row" id="clearanceRow"><label data-i18n="lblClearance">Höhe-Abzug</label><div class="val"><input type="number" id="panelClearance" step="0.01" min="0" max="3"> mm</div></div>
+<div class="row"><label data-i18n="lblThickness">Plattendicke</label><div class="val"><input type="range" id="thickness" min="1" max="6" step="0.5"><input type="number" id="thicknessN" step="0.5" min="1" max="6"> mm</div></div>
+<div class="row"><label data-i18n="lblColor">Farbe (3D)</label><div class="val"><input type="color" id="materialColor" style="width:52px;height:30px;padding:2px;background:#0c1017;border:1px solid var(--line);border-radius:6px;cursor:pointer"><span style="color:var(--muted);font-size:11.5px" data-i18n="hintColor3D">wirkt nur in der 3D-Ansicht</span></div></div>
+<div class="row"><label data-i18n="lblCornerMode">Eckform</label><div class="val"><div class="seg" id="cornerModeSeg">
+<button data-v="radius" data-i18n="btnRound">Rund</button><button data-v="chamfer" data-i18n="btnChamfer">45° Fase</button>
+</div></div></div>
+<div class="row" id="radiusRow"><label data-i18n="lblCornerRadius">Eckradius</label><div class="val"><input type="range" id="cornerRadius" min="0" max="5" step="0.5"><input type="number" id="cornerRadiusN" step="0.5" min="0" max="5"> mm</div></div>
+<div class="row" id="chamferRow"><label data-i18n="lblChamferWidth">Fasenbreite</label><div class="val"><input type="range" id="cornerChamfer" min="0" max="5" step="0.5"><input type="number" id="cornerChamferN" step="0.5" min="0" max="5"> mm</div></div>
+</fieldset>
+<fieldset>
+<legend data-i18n="legPattern">Muster</legend>
+<div class="row"><label> </label><div class="val"><div class="seg wrap" id="patternSeg">
+<button data-v="blank" data-i18n="patBlank">Blank</button><button data-v="round" data-i18n="patRound">Rundloch</button><button data-v="hex" data-i18n="patHex">Hexagon</button><button data-v="slots" data-i18n="patSlots">Lamellen</button><button data-v="bubble" data-i18n="patBubble">Bubble</button><button data-v="voronoi" data-i18n="patVoronoi">Voronoi</button>
+</div></div></div>
+<div class="row" id="hexOpts"><label data-i18n="lblHexD">Hexagon-Ø</label><div class="val"><input type="range" id="hexD" min="4" max="24" step="0.5"><input type="number" id="hexDN" step="0.5" min="4" max="24"> mm</div></div>
+<div class="row" id="hexWebRow"><label data-i18n="lblWeb">Steg</label><div class="val"><input type="range" id="hexWeb" min="0.5" max="5" step="0.1"><input type="number" id="hexWebN" step="0.1" min="0.5" max="5"> mm</div></div>
+<div class="row" id="hexOrientRow"><label data-i18n="lblOrient">Ausrichtung</label><div class="val"><div class="seg" id="hexOrientSeg" style="flex:1">
+<button data-v="pointy" data-i18n="orientPointy">Spitze oben</button><button data-v="flat" data-i18n="orientFlat">Flach oben</button>
+</div></div></div>
+<div class="row" id="roundDRow"><label data-i18n="lblRoundD">Lochdurchmesser</label><div class="val"><input type="range" id="roundD" min="2" max="30" step="0.5"><input type="number" id="roundDN" step="0.5" min="2" max="30"> mm</div></div>
+<div class="row" id="roundGapRow"><label data-i18n="lblWebWidth">Stegbreite</label><div class="val"><input type="range" id="roundGap" min="0.3" max="10" step="0.1"><input type="number" id="roundGapN" step="0.1" min="0.3" max="10"> mm</div></div>
+<div class="row" id="slotLenRow"><label data-i18n="lblSlotLen">Schlitzlänge</label><div class="val"><input type="range" id="slotLen" min="4" max="150" step="1"><input type="number" id="slotLenN" step="1" min="4" max="150"> mm</div></div>
+<div class="row" id="slotThickRow"><label data-i18n="lblSlotThick">Schlitzbreite</label><div class="val"><input type="range" id="slotThick" min="1.5" max="40" step="0.5"><input type="number" id="slotThickN" step="0.5" min="1.5" max="40"> mm</div></div>
+<div class="row" id="slotGapXRow"><label data-i18n="lblGapX">Abstand X</label><div class="val"><input type="range" id="slotGapX" min="0.5" max="30" step="0.5"><input type="number" id="slotGapXN" step="0.5" min="0.5" max="30"> mm</div></div>
+<div class="row" id="slotGapYRow"><label data-i18n="lblGapY">Abstand Y</label><div class="val"><input type="range" id="slotGapY" min="0.5" max="30" step="0.5"><input type="number" id="slotGapYN" step="0.5" min="0.5" max="30"> mm</div></div>
+<div class="row" id="slotOrientRow"><label data-i18n="lblOrient">Ausrichtung</label><div class="val"><div class="seg" id="slotOrientSeg" style="flex:1">
+<button data-v="h" data-i18n="orientH">Waagerecht</button><button data-v="v" data-i18n="orientV">Senkrecht</button>
+</div></div></div>
+<div class="row" id="bubbleMinDRow"><label data-i18n="lblDMin">Ø minimal</label><div class="val"><input type="range" id="bubbleMinD" min="1.5" max="60" step="0.5"><input type="number" id="bubbleMinDN" step="0.5" min="1.5" max="60"> mm</div></div>
+<div class="row" id="bubbleMaxDRow"><label data-i18n="lblDMax">Ø maximal</label><div class="val"><input type="range" id="bubbleMaxD" min="1.5" max="60" step="0.5"><input type="number" id="bubbleMaxDN" step="0.5" min="1.5" max="60"> mm</div></div>
+<div class="row" id="bubbleGapRow"><label data-i18n="lblMinGap">Mindestabstand</label><div class="val"><input type="range" id="bubbleGap" min="0" max="15" step="0.5"><input type="number" id="bubbleGapN" step="0.5" min="0" max="15"> mm</div></div>
+<div class="row" id="voronoiCountRow"><label data-i18n="lblCellCount">Anzahl Zellen</label><div class="val"><input type="range" id="voronoiCount" min="4" max="2000" step="1"><input type="number" id="voronoiCountN" step="1" min="4" max="2000"></div></div>
+<div class="row" id="voronoiWallRow"><label data-i18n="lblWebWidth">Stegbreite</label><div class="val"><input type="range" id="voronoiWall" min="0.3" max="15" step="0.1"><input type="number" id="voronoiWallN" step="0.1" min="0.3" max="15"> mm</div></div>
+<div class="row"><label data-i18n="lblMarginV">Ränder vertikal</label><div class="val"><input type="range" id="patternMargin" min="0" max="8" step="0.5"><input type="number" id="patternMarginN" step="0.5" min="0" max="8"> mm</div></div>
+<div class="row"><label data-i18n="lblMarginH">Ränder horizontal</label><div class="val"><input type="range" id="marginX" min="0" max="40" step="0.5"><input type="number" id="marginXN" step="0.5" min="0" max="40"> mm</div></div>
+<p class="hint" data-i18n="hintMargins">„Ränder vertikal" regelt ausschließlich den Abstand oben/unten, „Ränder horizontal" ausschließlich links/rechts (z. B. für den Bereich der Befestigungslöcher) – beide wirken komplett unabhängig voneinander.</p>
+<div class="row"><label data-i18n="lblHoleClearance">Abst. zu Bohrungen</label><div class="val"><input type="range" id="holeClearance" min="0" max="8" step="0.5"><input type="number" id="holeClearanceN" step="0.5" min="0" max="8"> mm</div></div>
+<div id="edgeClipBlock">
+<div class="row"><label data-i18n="lblEdge">Am Rand</label><div class="val"><div class="seg" id="edgeClipSeg" style="flex:1">
+<button data-v="0" data-i18n="edgeSpare">Aussparen</button><button data-v="1" data-i18n="edgeCut">Abschneiden</button>
+</div></div></div>
+<div class="row" id="edgeClipMinRow"><label data-i18n="lblMinSize">Mindestgröße</label><div class="val"><input type="range" id="edgeClipMinPct" min="0" max="90" step="5"><input type="number" id="edgeClipMinPctN" step="5" min="0" max="90">%</div></div>
+<p class="hint" id="edgeClipMinHint" data-i18n="hintEdgeClipMin">Randfragmente unter diesem Anteil der ursprünglichen Zellfläche werden verworfen statt als winziger Splitter angezeigt.</p>
+</div>
+<div id="gradientBlock">
+<div class="row"><label data-i18n="lblGradient">Dichte-Gradient</label><div class="val"><input type="checkbox" id="gradientEnabled"></div></div>
+<div class="row" id="gradientOpts"><label data-i18n="lblDirection">Richtung</label><div class="val"><select id="gradientDir" style="flex:1">
+<option value="right" data-i18n="dirRight">→ nach rechts dünner</option>
+<option value="left" data-i18n="dirLeft">← nach links dünner</option>
+<option value="down" data-i18n="dirDown">↓ nach unten dünner</option>
+<option value="up" data-i18n="dirUp">↑ nach oben dünner</option>
+<option value="radialOut" data-i18n="dirRadialOut">Mitte → Rand dünner</option>
+<option value="radialIn" data-i18n="dirRadialIn">Rand → Mitte dünner</option>
+</select></div></div>
+<div class="row" id="gradientOpts2"><label data-i18n="lblMode">Modus</label><div class="val"><div class="seg" id="gradientModeSeg" style="flex:1">
+<button data-v="density" data-i18n="modeDensity">Dichte</button><button data-v="size" data-i18n="modeSize">Größe</button>
+</div></div></div>
+<div class="row" id="gradientOpts3"><label data-i18n="lblStrength">Stärke</label><div class="val"><input type="range" id="gradientStrength" min="0" max="1" step="0.05"><input type="number" id="gradientStrengthN" step="0.05" min="0" max="1"></div></div>
+<div class="row" id="gradientSeedRow"><label data-i18n="lblSeed">Zufalls-Seed</label><div class="val"><input type="number" id="seed" step="1"><button class="addbtn" id="seedShuffle" data-i18n-title="titleNewSeed" title="Neuer Zufalls-Seed">🎲</button></div></div>
+</div>
+</fieldset>
+<fieldset id="holesFieldset">
+<legend data-i18n="legHoles">Montagebohrungen</legend>
+<div class="row"><label data-i18n="lblHolesEnabled">Bohrungen</label><div class="val"><input type="checkbox" id="holesEnabled"></div></div>
+<div class="row"><label data-i18n="lblHoleD">Bohr-Ø</label><div class="val"><input type="number" id="holeDiameter" step="0.1" min="5" max="7"> mm</div></div>
+<div class="row"><label data-i18n="lblSlotFactor">Langloch-Faktor</label><div class="val"><input type="number" id="slotFactor" step="0.1" min="1" max="3"> × Ø</div></div>
+<div class="row"><label data-i18n="lblRowSpacing">Reihenabstand</label><div class="val"><input type="number" id="holeRowSpacing" step="0.5" min="50" max="254"> mm</div></div>
+<div class="row"><label data-i18n="lblRowStd">Reihen-Standard</label><div class="val" style="gap:6px">
+<button class="addbtn" data-ws="222.25" data-i18n="rowStd875">8,75″ = 222,25</button>
+<button class="addbtn" data-ws="236.525" data-i18n="rowStd931">9,31″ = 236,53</button>
+</div></div>
+<div class="row"><label data-i18n="lblEdgeDist">Randabstand</label><div class="val"><input type="number" id="edgeHoleDist" step="0.5" min="0" max="20"> mm</div></div>
+<div class="row"><label data-i18n="lblMidHoles">Mittlere Löcher</label><div class="val"><input type="checkbox" id="midHoles"><span style="color:var(--muted);font-size:11.5px" data-i18n="hintMidHoles">je U (→ 3 pro Seite)</span></div></div>
+<div class="row"><label data-i18n="lblBoundaryHoles">U-Grenz-Löcher</label><div class="val"><input type="checkbox" id="boundaryHoles"><span style="color:var(--muted);font-size:11.5px" data-i18n="hintBoundaryHoles">Paar an U-Grenzen (je Randabstand)</span></div></div>
+<div class="row" id="halfUTopRow"><label data-i18n="lblHalfU">Halbe Resthöhe</label><div class="val"><div class="seg" id="halfUTopSeg" style="flex:1">
+<button data-v="1" data-i18n="btnTop">Oben</button><button data-v="0" data-i18n="btnBottom">Unten</button>
+</div></div></div>
+<p class="hint" data-i18n="hintEIA">10″-Standard: U-Pitch 44,45 · Panelhöhe = U−0,79 (1U = 43,66) · Breite 254 · Reihenabstand 236,53 (9,31″) · Ø 4,5 · Randabst. 6,35 (EIA-310, 1/4″) → mittleres Loch exakt 15,875 mm zu beiden Nachbarlöchern · Langloch ×2. Bitte gegen dein Rack prüfen!</p>
+</fieldset>
+<fieldset>
+<legend data-i18n="legCutouts">Individuelle Ausschnitte</legend>
+<div class="addrow">
+<button class="addbtn" data-add="rect" data-i18n="addRect">+ Rechteck</button>
+<button class="addbtn" data-add="circle" data-i18n="addCircle">+ Kreis</button>
+<button class="addbtn" data-add="hex" data-i18n="addHex">+ Hexagon</button>
+<button class="addbtn" data-add="poly" data-i18n="addPoly">+ Polygon</button>
+</div>
+<div id="cutoutList"></div>
+<p class="hint" id="cutoutHint" data-i18n="hintNoCutouts">Noch keine Ausschnitte. Position in mm, Ursprung = untere linke Ecke der Platte. Tipp: Ausschnitte lassen sich in der 2D-Ansicht auch direkt per Drag & Drop verschieben.</p>
+</fieldset>
+<fieldset>
+<legend data-i18n="legExport">Export & teilen</legend>
+<div class="row"><button class="addbtn" id="expSTL" data-i18n="btnExpSTL">⬇ STL (3D-Druck)</button>
+<button class="addbtn" id="expDXF" data-i18n="btnExpDXF">⬇ DXF (Laserschnitt)</button></div>
+<div class="row"><button class="addbtn" id="shareBtn" data-i18n="btnShare">🔗 Konfigurationslink kopieren</button>
+<button class="addbtn" id="resetBtn" data-i18n="btnReset">↺ Zurücksetzen</button></div>
+</fieldset>
+</aside>
+<section id="viewport">
+<div class="tabs">
+<button class="tab on" data-view="3d" data-i18n="tab3d">3D-Ansicht</button>
+<button class="tab" data-view="2d" data-i18n="tab2d">2D Draufsicht</button>
+<button class="tab viewhome" id="viewHomeBtn" data-i18n-title="titleViewHome" title="Ansicht zurücksetzen"><span data-i18n="btnViewHome">⌂ Ursprung</span></button>
+</div>
+<div id="view3d"></div>
+<div id="view2d"><svg id="svg2d" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<div id="info"></div>
+</section>
+</main>
+<footer><span data-i18n="footerText">10″-Rack-Standard: U-Pitch 44,45 mm · Panelhöhe = U−0,79 mm · Breite 254 mm · Max. 6 U (265,9 mm) für 3D-Druck &lt;300×300 · Einheiten in mm</span> · <a href="https://docbigs-lab.de/" target="_blank" rel="noopener" style="color:inherit">DocBigslab</a></footer>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+'use strict';
+/*
+=========================================================
+10" Cover-Designer für 10-Zoll-Racks (3D-Druck, <300×300)
+- Muster: Blank, Hexagon (Honeycomb, Ø + Steg in mm, zentriert)
+- Ecken: Rund (Radius) oder 45°-Fase (Fasenbreite in mm)
+- Montagebohrungen: Rund- oder Langlöcher, 3 pro U pro Seite
+- Individuelle Ausschnitte: Rechteck, Kreis, Hexagon, Polygon
+- Export: STL (3D-Druck) + DXF (Laserschnitt)
+- Konfiguration im URL-Parameter ?p=...
+=========================================================
+*/
+
+/* ---------- Sprache / Übersetzungen ---------- */
+const LANG_KEY = 'coverDesignerLang';
+let lang = (function(){ try{ return localStorage.getItem(LANG_KEY) || 'de'; }catch(e){ return 'de'; } })();
+const I18N = {
+de: {
+headerSub: '10-Zoll-Rack · 0,5 – 6 U · Blank / Hexagon / Langlöcher / Ausschnitte · Export STL & DXF',
+legSize: 'Größe & Material',
+lblSizeU: 'Größe (U)', lblPanelWidth: 'Plattenbreite', lblClearance: 'Höhe-Abzug', lblThickness: 'Plattendicke',
+lblSizeMode: 'Modus', modeRack: '10"-Rack', modeFree: 'Frei', lblPanelHeight: 'Höhe',
+lblColor: 'Farbe (3D)', hintColor3D: 'wirkt nur in der 3D-Ansicht',
+lblCornerMode: 'Eckform', btnRound: 'Rund', btnChamfer: '45° Fase',
+lblCornerRadius: 'Eckradius', lblChamferWidth: 'Fasenbreite',
+legPattern: 'Muster',
+patBlank: 'Blank', patRound: 'Rundloch', patHex: 'Hexagon', patSlots: 'Lamellen', patBubble: 'Bubble', patVoronoi: 'Voronoi',
+lblHexD: 'Hexagon-Ø', lblWeb: 'Steg', lblOrient: 'Ausrichtung', orientPointy: 'Spitze oben', orientFlat: 'Flach oben',
+lblRoundD: 'Lochdurchmesser', lblWebWidth: 'Stegbreite',
+lblSlotLen: 'Schlitzlänge', lblSlotThick: 'Schlitzbreite', lblGapX: 'Abstand X', lblGapY: 'Abstand Y',
+orientH: 'Waagerecht', orientV: 'Senkrecht',
+lblDMin: 'Ø minimal', lblDMax: 'Ø maximal', lblMinGap: 'Mindestabstand', lblCellCount: 'Anzahl Zellen',
+lblMarginV: 'Ränder vertikal', lblMarginH: 'Ränder horizontal',
+hintMargins: '„Ränder vertikal" regelt ausschließlich den Abstand oben/unten, „Ränder horizontal" ausschließlich links/rechts (z. B. für den Bereich der Befestigungslöcher) – beide wirken komplett unabhängig voneinander.',
+lblHoleClearance: 'Abst. zu Bohrungen',
+lblEdge: 'Am Rand', edgeSpare: 'Aussparen', edgeCut: 'Abschneiden',
+lblMinSize: 'Mindestgröße',
+hintEdgeClipMin: 'Randfragmente unter diesem Anteil der ursprünglichen Zellfläche werden verworfen statt als winziger Splitter angezeigt.',
+lblGradient: 'Dichte-Gradient', lblDirection: 'Richtung',
+dirRight: '→ nach rechts dünner', dirLeft: '← nach links dünner', dirDown: '↓ nach unten dünner', dirUp: '↑ nach oben dünner',
+dirRadialOut: 'Mitte → Rand dünner', dirRadialIn: 'Rand → Mitte dünner',
+lblMode: 'Modus', modeDensity: 'Dichte', modeSize: 'Größe',
+lblStrength: 'Stärke', lblSeed: 'Zufalls-Seed', titleNewSeed: 'Neuer Zufalls-Seed',
+legHoles: 'Montagebohrungen',
+lblHolesEnabled: 'Bohrungen', lblHoleD: 'Bohr-Ø', lblSlotFactor: 'Langloch-Faktor', lblRowSpacing: 'Reihenabstand',
+lblRowStd: 'Reihen-Standard', lblEdgeDist: 'Randabstand',
+lblMidHoles: 'Mittlere Löcher', hintMidHoles: 'je U (→ 3 pro Seite)',
+lblBoundaryHoles: 'U-Grenz-Löcher', hintBoundaryHoles: 'Paar an U-Grenzen (je Randabstand)',
+lblHalfU: 'Halbe Resthöhe', btnTop: 'Oben', btnBottom: 'Unten',
+hintEIA: '10″-Standard: U-Pitch 44,45 · Panelhöhe = U−0,79 (1U = 43,66) · Breite 254 · Reihenabstand 236,53 (9,31″) · Ø 4,5 · Randabst. 6,35 (EIA-310, 1/4″) → mittleres Loch exakt 15,875 mm zu beiden Nachbarlöchern · Langloch ×2. Bitte gegen dein Rack prüfen!',
+legCutouts: 'Individuelle Ausschnitte',
+addRect: '+ Rechteck', addCircle: '+ Kreis', addHex: '+ Hexagon', addPoly: '+ Polygon',
+hintNoCutouts: 'Noch keine Ausschnitte. Position in mm, Ursprung = untere linke Ecke der Platte. Tipp: Ausschnitte lassen sich in der 2D-Ansicht auch direkt per Drag & Drop verschieben.',
+legExport: 'Export & teilen',
+btnExpSTL: '⬇ STL (3D-Druck)', btnExpDXF: '⬇ DXF (Laserschnitt)',
+btnShare: '🔗 Konfigurationslink kopieren', btnReset: '↺ Zurücksetzen',
+tab3d: '3D-Ansicht', tab2d: '2D Draufsicht', titleViewHome: 'Ansicht zurücksetzen', btnViewHome: '⌂ Ursprung',
+footerText: '10″-Rack-Standard: U-Pitch 44,45 mm · Panelhöhe = U−0,79 mm · Breite 254 mm · Max. 6 U (265,9 mm) für 3D-Druck <300×300 · Einheiten in mm',
+toastInvalidConfig: '⚠ Konfiguration ungültig: {msg}',
+toast3dDisabled: '⚠ 3D-Ansicht deaktiviert (Fehler): {msg}',
+toast2dFailed: '⚠ 2D-Vorschau fehlgeschlagen: {msg}',
+toastSTLExported: 'STL exportiert ({n} Dreiecke)',
+toastSTLFailed: '⚠ STL-Export fehlgeschlagen: {msg}',
+toastDXFExported: 'DXF exportiert',
+toastDXFFailed: '⚠ DXF-Export fehlgeschlagen: {msg}',
+toastLinkCopied: 'Konfigurationslink kopiert',
+title3dUnavailable: '3D-Vorschau nicht verfügbar (three.js nicht geladen)',
+warnCutoutsIgnored: '{n} Ausschnitt(e) ignoriert: ragen über den Rand oder überlappen Bohrung/Ausschnitt',
+warnHoleRowsOutside: 'Bohrungsreihen außerhalb der Platte',
+warnPanelMax: 'Platte >300 mm – passt nicht mehr auf ein Standard-3D-Druckbett (DXF/Laserschnitt unbegrenzt möglich)',
+chipDims: 'Höhe {h} mm · Breite {w} mm · Dicke {t} mm',
+chipSlots: ' Langlöcher (×{f})', chipHoles: ' Bohrungen', chipCutouts: ' Ausschnitte',
+patternNounHex: 'Hexagon-Zellen', patternNounRound: 'Rundlöcher', patternNounSlots: 'Schlitze',
+patternNounBubble: 'Bubbles', patternNounVoronoi: 'Voronoi-Zellen',
+warnManyCells: 'Viele Zellen – Export kann dauern',
+cutoutRect: 'Rechteck', cutoutCircle: 'Kreis', cutoutHex: 'Hexagon', cutoutPoly: 'Polygon',
+fieldX: 'X', fieldY: 'Y', fieldW: 'B', fieldH: 'H', fieldR: 'R', fieldLen: 'L', titleRemove: 'Entfernen',
+titleOrient: 'Ausrichtung umschalten (waagerecht/senkrecht)',
+titleDuplicate: 'Duplizieren',
+titleDismiss: 'Hinweis ausblenden',
+placeholderPoly: 'z. B. 0,0; 40,0; 40,20; 0,20',
+rowStd875: '8,75″ = 222,25', rowStd931: '9,31″ = 236,53',
+decimalSep: ','
+},
+en: {
+headerSub: '10" rack · 0.5 – 6 U · Blank / Hexagon / Slots / Cutouts · Export STL & DXF',
+legSize: 'Size & Material',
+lblSizeU: 'Size (U)', lblPanelWidth: 'Panel width', lblClearance: 'Height reduction', lblThickness: 'Panel thickness',
+lblSizeMode: 'Mode', modeRack: '10" rack', modeFree: 'Free', lblPanelHeight: 'Height',
+lblColor: 'Color (3D)', hintColor3D: 'affects 3D view only',
+lblCornerMode: 'Corner style', btnRound: 'Round', btnChamfer: 'Chamfer',
+lblCornerRadius: 'Corner radius', lblChamferWidth: 'Chamfer width',
+legPattern: 'Pattern',
+patBlank: 'Blank', patRound: 'Round holes', patHex: 'Hexagon', patSlots: 'Louvers', patBubble: 'Bubble', patVoronoi: 'Voronoi',
+lblHexD: 'Hexagon Ø', lblWeb: 'Web', lblOrient: 'Orientation', orientPointy: 'Pointy top', orientFlat: 'Flat top',
+lblRoundD: 'Hole diameter', lblWebWidth: 'Web width',
+lblSlotLen: 'Slot length', lblSlotThick: 'Slot width', lblGapX: 'Spacing X', lblGapY: 'Spacing Y',
+orientH: 'Horizontal', orientV: 'Vertical',
+lblDMin: 'Ø minimum', lblDMax: 'Ø maximum', lblMinGap: 'Minimum spacing', lblCellCount: 'Cell count',
+lblMarginV: 'Vertical margin', lblMarginH: 'Horizontal margin',
+hintMargins: '"Vertical margin" controls only the top/bottom spacing, "horizontal margin" only left/right (e.g. for the mounting-hole area) – both act completely independently.',
+lblHoleClearance: 'Hole clearance',
+lblEdge: 'At edge', edgeSpare: 'Keep clear', edgeCut: 'Trim',
+lblMinSize: 'Minimum size',
+hintEdgeClipMin: 'Edge fragments below this share of the original cell area are discarded instead of showing up as tiny slivers.',
+lblGradient: 'Density gradient', lblDirection: 'Direction',
+dirRight: '→ thinner to the right', dirLeft: '← thinner to the left', dirDown: '↓ thinner downward', dirUp: '↑ thinner upward',
+dirRadialOut: 'Center → edge thinner', dirRadialIn: 'Edge → center thinner',
+lblMode: 'Mode', modeDensity: 'Density', modeSize: 'Size',
+lblStrength: 'Strength', lblSeed: 'Random seed', titleNewSeed: 'New random seed',
+legHoles: 'Mounting holes',
+lblHolesEnabled: 'Holes', lblHoleD: 'Hole Ø', lblSlotFactor: 'Slot factor', lblRowSpacing: 'Row spacing',
+lblRowStd: 'Row spacing preset', lblEdgeDist: 'Edge distance',
+lblMidHoles: 'Middle holes', hintMidHoles: 'per U (→ 3 per side)',
+lblBoundaryHoles: 'U-boundary holes', hintBoundaryHoles: 'pair at U boundaries (per edge distance)',
+lblHalfU: 'Half-U remainder', btnTop: 'Top', btnBottom: 'Bottom',
+hintEIA: '10″ standard: U-pitch 44.45 · panel height = U−0.79 (1U = 43.66) · width 254 · row spacing 236.53 (9.31″) · Ø 4.5 · edge dist. 6.35 (EIA-310, 1/4″) → middle hole exactly 15.875 mm to both neighboring holes · slot ×2. Please verify against your rack!',
+legCutouts: 'Custom cutouts',
+addRect: '+ Rectangle', addCircle: '+ Circle', addHex: '+ Hexagon', addPoly: '+ Polygon',
+hintNoCutouts: 'No cutouts yet. Position in mm, origin = bottom-left corner of the panel. Tip: cutouts can also be moved directly via drag & drop in the 2D view.',
+legExport: 'Export & share',
+btnExpSTL: '⬇ STL (3D print)', btnExpDXF: '⬇ DXF (laser cutting)',
+btnShare: '🔗 Copy configuration link', btnReset: '↺ Reset',
+tab3d: '3D view', tab2d: '2D top view', titleViewHome: 'Reset view', btnViewHome: '⌂ Home',
+footerText: '10″ rack standard: U-pitch 44.45 mm · panel height = U−0.79 mm · width 254 mm · max. 6 U (265.9 mm) for 3D printing <300×300 · units in mm',
+toastInvalidConfig: '⚠ Invalid configuration: {msg}',
+toast3dDisabled: '⚠ 3D view disabled (error): {msg}',
+toast2dFailed: '⚠ 2D preview failed: {msg}',
+toastSTLExported: 'STL exported ({n} triangles)',
+toastSTLFailed: '⚠ STL export failed: {msg}',
+toastDXFExported: 'DXF exported',
+toastDXFFailed: '⚠ DXF export failed: {msg}',
+toastLinkCopied: 'Configuration link copied',
+title3dUnavailable: '3D preview unavailable (three.js not loaded)',
+warnCutoutsIgnored: '{n} cutout(s) ignored: extend past the edge or overlap a hole/cutout',
+warnHoleRowsOutside: 'Hole rows outside the panel',
+warnPanelMax: 'Panel >300 mm – no longer fits a standard 3D print bed (DXF/laser cutting unlimited)',
+chipDims: 'Height {h} mm · width {w} mm · thickness {t} mm',
+chipSlots: ' slots (×{f})', chipHoles: ' holes', chipCutouts: ' cutouts',
+patternNounHex: 'hexagon cells', patternNounRound: 'round holes', patternNounSlots: 'slots',
+patternNounBubble: 'bubbles', patternNounVoronoi: 'Voronoi cells',
+warnManyCells: 'Many cells – export may take a while',
+cutoutRect: 'Rectangle', cutoutCircle: 'Circle', cutoutHex: 'Hexagon', cutoutPoly: 'Polygon',
+fieldX: 'X', fieldY: 'Y', fieldW: 'W', fieldH: 'H', fieldR: 'R', fieldLen: 'L', titleRemove: 'Remove',
+titleOrient: 'Toggle orientation (horizontal/vertical)',
+titleDuplicate: 'Duplicate',
+titleDismiss: 'Dismiss',
+placeholderPoly: 'e.g. 0,0; 40,0; 40,20; 0,20',
+rowStd875: '8.75″ = 222.25', rowStd931: '9.31″ = 236.53',
+decimalSep: '.'
+}
+};
+function t(key, vars){
+let s = (I18N[lang] && I18N[lang][key]) || (I18N.de[key]) || key;
+if(vars) for(const k in vars) s = s.split('{'+k+'}').join(vars[k]);
+return s;
+}
+function applyI18n(){
+document.documentElement.lang = lang;
+document.querySelectorAll('[data-i18n]').forEach(el=>{
+const key = el.dataset.i18n;
+// Buttons mit verschachteltem <span data-i18n> (z. B. Ursprung-Button) ausnehmen, da
+// sie hier separat als eigenes Element erfasst werden.
+if(el.children.length && el.querySelector(':scope > [data-i18n]')) return;
+el.textContent = t(key);
+});
+document.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.title = t(el.dataset.i18nTitle); });
+document.querySelectorAll('#langSwitch button').forEach(b=>b.classList.toggle('on', b.dataset.lang===lang));
+const tab3d = document.querySelector('.tab[data-view="3d"]');
+if(tab3d && tab3d.disabled) tab3d.title = t('title3dUnavailable');
+}
+
+/* ---------- Konstanten & Zustand ---------- */
+const U_MM = 44.45; // U-Pitch
+const MAX_U = 6; // max. 6 U -> 265,9 mm (<300)
+const MAX_PANEL = 300; // max. Plattenmaß (3D-Drucker) - gilt als Warnschwelle in beiden Modi
+const MAX_PANEL_FREE = 1000; // harte Obergrenze im freien Modus (Laserschnitt/DXF, kein Druckbett-Limit)
+const MIN_PANEL_RACK = 100; // Mindestbreite im Rack-Modus (10"-Racks sind nie schmaler)
+const MIN_PANEL_FREE = 10; // Mindestmaß im freien Modus (z. B. kleine Seitenteile)
+
+const DEFAULTS = Object.freeze({
+mode: 'rack', // 'rack' (10"-Rack, U-basiert) | 'free' (freie Außenmaße)
+panelHeight: 200, // Höhe im freien Modus (mm)
+sizeU: 2, // Höhe in U (0.5 – 6)
+pattern: 'blank', // 'blank' | 'hex' | 'round' | 'slots'
+hexD: 13, // Hexagon-Umkreisdurchmesser in mm
+hexWeb: 1.5, // Materialsteg zwischen Zellen in mm
+hexOrient: 'pointy', // 'pointy' | 'flat'
+roundD: 6, // Rundloch-Durchmesser
+roundGap: 2, // Stegbreite zwischen Rundlöchern
+slotLen: 20, // Schlitzlänge
+slotThick: 4, // Schlitzbreite (Dicke)
+slotGapX: 4, // Abstand zwischen Schlitzen einer Reihe
+slotGapY: 4, // Abstand zwischen Schlitz-Reihen
+slotVertical: false, // Ausrichtung der Lamellen
+bubbleMinD: 4, // Bubble: kleinster Lochdurchmesser
+bubbleMaxD: 14, // Bubble: größter Lochdurchmesser
+bubbleGap: 2, // Bubble: Mindestabstand zwischen den Löchern
+voronoiCount: 35, // Voronoi: Anzahl der Zellen
+voronoiWall: 2, // Voronoi: Stegbreite zwischen den Zellen
+edgeClip: false, // false = Muster am Rand aussparen (Standard), true = am Rand abschneiden
+edgeClipMinPct: 25, // Randfragmente unter X % der Originalfläche werden verworfen
+gradientEnabled: false, // Dichte-Gradient: Zusatzoption für alle Rastermuster
+gradientDir: 'right', // 'right'|'left'|'up'|'down'|'radialOut'|'radialIn'
+gradientMode: 'density', // 'density' (Zellen zufällig weglassen) | 'size' (Zellen skalieren)
+gradientStrength: 0.7, // 0 = kein Effekt, 1 = maximale Ausdünnung/Verkleinerung am Gradienten-Ende
+seed: 1337, // Zufalls-Seed für reproduzierbare Dichte-Ausdünnung
+patternMargin: 1.5,
+marginX: 1.5, // Randabstand links/rechts, vollständig unabhängig von patternMargin (oben/unten)
+holeClearance: 1.5,
+panelWidth: 254,
+panelClearance: 0.79, // Abzug vom U-Pitch (Panelhöhe 1U = 43,66)
+thickness: 2.5,
+materialColor: '#ff9900', // Materialfarbe in der 3D-Ansicht
+cornerMode: 'radius', // 'radius' | 'chamfer'
+cornerRadius: 2, // bei Eckform Rund
+cornerChamfer: 5, // bei 45°-Fase (Fasenbreite in mm)
+holesEnabled: true,
+holeDiameter: 6.3,
+slotFactor: 2, // 1.0 = rund, 2.0 = 2×Ø Langloch (waagerecht)
+holeRowSpacing: 236.525,// Default 9,31″ (alternativ 222,25 = 8,75″)
+edgeHoleDist: 6.35, // EIA-310-Standard (1/4"): ergibt exakt 15,875 mm Abstand zum mittleren Loch
+boundaryHoles: true, // Paar an inneren U-Grenzen (je Randabstand)
+halfUTop: true, // bei .5U-Resthöhe: true = Hälfte oben (Standard), false = Hälfte unten
+midHoles: true, // mittleres Loch je U (-> 3 pro U pro Seite)
+cutouts: []
+});
+
+function loadState(){
+let s = Object.assign({}, DEFAULTS, { cutouts: [] });
+try{
+const p = new URLSearchParams(location.search).get('p');
+if(p){
+const o = JSON.parse(decodeURIComponent(p));
+s = Object.assign({}, DEFAULTS, o);
+s.cutouts = Array.isArray(o.cutouts) ? o.cutouts : [];
+// Legacy-Umrechnung: altes R (hexSize) + Rippe (hexRib)
+if(o.hexD===undefined && o.hexSize!==undefined) s.hexD = Math.round(o.hexSize*2*10)/10;
+if(o.hexWeb===undefined && o.hexRib!==undefined) s.hexWeb = o.hexRib;
+}
+}catch(e){ console.warn('Konfigurations-Link ungültig:', e); }
+
+s.sizeU = Math.min(MAX_U, Math.max(0.5, Math.round((Number(s.sizeU)||DEFAULTS.sizeU)*2)/2));
+if(!['blank','hex','round','slots','bubble','voronoi'].includes(s.pattern)) s.pattern='blank';
+if(s.hexOrient!=='flat') s.hexOrient='pointy';
+if(s.cornerMode!=='chamfer') s.cornerMode='radius';
+s.edgeHoleDist = Math.max(0, Number(s.edgeHoleDist)||0);
+s.holeDiameter = Math.min(7, Math.max(5, Number(s.holeDiameter)||DEFAULTS.holeDiameter));
+s.panelClearance = Math.max(0, Number(s.panelClearance)||0);
+s.mode = (s.mode==='free') ? 'free' : 'rack';
+s.panelHeight = Math.min(MAX_PANEL_FREE, Math.max(MIN_PANEL_FREE, Number(s.panelHeight)||DEFAULTS.panelHeight));
+s.panelWidth = Math.min(s.mode==='free' ? MAX_PANEL_FREE : MAX_PANEL, Math.max(s.mode==='free' ? MIN_PANEL_FREE : MIN_PANEL_RACK, Number(s.panelWidth)||DEFAULTS.panelWidth));
+s.slotFactor = Math.max(1, Number(s.slotFactor)||1);
+s.hexD = Math.min(24, Math.max(4, Number(s.hexD)||DEFAULTS.hexD));
+s.hexWeb = Math.max(0.5, Number(s.hexWeb)||DEFAULTS.hexWeb);
+s.roundD = Math.min(30, Math.max(2, Number(s.roundD)||DEFAULTS.roundD));
+s.roundGap = Math.max(0.3, Number(s.roundGap)||DEFAULTS.roundGap);
+s.slotLen = Math.min(150, Math.max(4, Number(s.slotLen)||DEFAULTS.slotLen));
+s.slotThick = Math.min(40, Math.max(1.5, Number(s.slotThick)||DEFAULTS.slotThick));
+s.slotGapX = Math.max(0.5, Number(s.slotGapX)||DEFAULTS.slotGapX);
+s.slotGapY = Math.max(0.5, Number(s.slotGapY)||DEFAULTS.slotGapY);
+s.bubbleMinD = Math.min(60, Math.max(1.5, Number(s.bubbleMinD)||DEFAULTS.bubbleMinD));
+s.bubbleMaxD = Math.min(60, Math.max(s.bubbleMinD, Number(s.bubbleMaxD)||DEFAULTS.bubbleMaxD));
+s.bubbleGap = Math.max(0, Number(s.bubbleGap)||0);
+s.voronoiCount = Math.min(2000, Math.max(2, Math.round(Number(s.voronoiCount)||DEFAULTS.voronoiCount)));
+s.voronoiWall = Math.min(15, Math.max(0.3, Number(s.voronoiWall)||DEFAULTS.voronoiWall));
+s.slotVertical = !!s.slotVertical;
+s.edgeClip = !!s.edgeClip;
+s.halfUTop = s.halfUTop!==false;
+s.edgeClipMinPct = Math.min(90, Math.max(0, Number(s.edgeClipMinPct)));
+if(!isFinite(s.edgeClipMinPct)) s.edgeClipMinPct = DEFAULTS.edgeClipMinPct;
+s.gradientEnabled = !!s.gradientEnabled;
+if(!['right','left','up','down','radialOut','radialIn'].includes(s.gradientDir)) s.gradientDir = DEFAULTS.gradientDir;
+if(!['density','size'].includes(s.gradientMode)) s.gradientMode = DEFAULTS.gradientMode;
+s.gradientStrength = Math.min(1, Math.max(0, Number(s.gradientStrength)));
+if(!isFinite(s.gradientStrength)) s.gradientStrength = DEFAULTS.gradientStrength;
+s.seed = Math.round(Number(s.seed));
+if(!isFinite(s.seed)) s.seed = DEFAULTS.seed;
+s.cornerRadius = Math.min(5, Math.max(0, Number(s.cornerRadius)||0));
+if(!/^#[0-9a-fA-F]{6}$/.test(s.materialColor||'')) s.materialColor = DEFAULTS.materialColor;
+s.cornerChamfer = Math.min(5, Math.max(0, Number(s.cornerChamfer)||0));
+s.holeRowSpacing = Math.min(254, Math.max(20, Number(s.holeRowSpacing)||DEFAULTS.holeRowSpacing));
+s.marginX = Math.min(60, Math.max(0, Number(s.marginX)||0));
+s.cutouts = s.cutouts.filter(c => c && ['rect','circle','hex','poly'].includes(c.type));
+return s;
+}
+
+let state = loadState();
+
+/* ---------- 2D-Geometrie ---------- */
+function panelH(){ return state.mode==='free' ? state.panelHeight : (state.sizeU * U_MM - state.panelClearance); }
+function slotA(){ return Math.max(0, state.holeDiameter/2 * (state.slotFactor - 1)); }
+
+// Eckparameter für die Außenkontur
+function cornerParam(w, h){
+if(state.cornerMode==='chamfer'){
+return { mode:'chamfer', v: Math.min(state.cornerChamfer, Math.min(w,h)/2 - 0.1) };
+}
+return { mode:'radius', v: Math.min(state.cornerRadius, w/2 - 0.1, h/2 - 0.1) };
+}
+
+// Montagebohrungen: 2 vertikale Reihen (symmetrisch um Plattenmitte).
+// pro U: Kantenloch unten + mittleres Loch + Kantenloch oben.
+// U-Grenz-Paar: je ein Randloch der beiden angrenzenden U
+// -> Abstand zum Grenzpunkt = Randabstand (edgeHoleDist).
+function computeHoles(){
+const out=[];
+if(!state.holesEnabled || state.mode==='free') return out; // Montagebohrungen sind reine Rack-Logik (U-Raster)
+const h = panelH();
+const N = Math.round(state.sizeU*2)/2;
+const xs = [
+state.panelWidth/2 - state.holeRowSpacing/2,
+state.panelWidth/2 + state.holeRowSpacing/2
+];
+const r = state.holeDiameter/2, a = slotA();
+const e = state.edgeHoleDist;
+
+const ys=[];
+ys.push(e);
+
+if(state.boundaryHoles){
+for(let k=1; k<N; k++){
+const yb = k*U_MM;
+if(yb >= h - 1e-9) break;
+ys.push(yb - e, yb + e);
+}
+}
+if(state.midHoles){
+// EIA-310: das mittlere Loch sitzt IMMER exakt 15,875 mm vom unteren
+// Bezugsloch der jeweiligen U entfernt - unabhängig von Randabstand und Panelhöhe.
+const MID_GAP = 15.875;
+for(let k=0; k<N; k++){
+const bottomRef = (k===0) ? e : k*U_MM + e;
+const ym = bottomRef + MID_GAP;
+if(ym > -0.01 && ym < h + 0.01) ys.push(ym);
+}
+}
+
+// Oberste Kante: Bei GANZEN U-Werten liegt die Panteloberkante auf einer echten
+// U-Rastergrenze -> Randabstand (e) ist hier korrekt (kleine ~0,79mm Fertigungstoleranz
+// durch panelClearance, wie überall sonst auch). Bei einer HALBEN U-Resthöhe oben
+// (0,5U / 1,5U / 2,5U / ...) liegt die Panteloberkante dagegen exakt auf der
+// U-Mittelposition - und die ist selbst bereits ein echtes Bohrloch (siehe MID_GAP-Logik
+// oben), braucht also KEINEN zusätzlichen 6,35mm-Randabstand mehr. Die alte Formel
+// (h - e) lag hier um ca. 6,35mm daneben statt nur um die übliche ~0,79mm Toleranz -
+// genau der Fehler, den ein Nutzer bei .5U-Panelhöhen bemerkt hat.
+const fracU = state.sizeU - Math.floor(state.sizeU);
+const hasHalfUTop = Math.abs(fracU - 0.5) < 1e-6;
+// Position bleibt exakt auf dem echten Raster (kein Einwärtsrücken!). Das Loch DARF und
+// SOLL hier von der Kante angeschnitten werden (halbe Form), damit es zum Anschluss-Panel
+// bzw. zur Schiene passt. Wichtig ist nur, dass der Anschnitt sauber/exakt erfolgt statt
+// grob über die Kante hinauszuragen - das übernimmt buildData() beim Zusammenbau (dort
+// wird die Plattenbreite/-höhe schon berechnet, hier in computeHoles() noch nicht beide).
+ys.push(hasHalfUTop ? h : h - e);
+
+// Bei .5U-Resthöhe: wahlweise Hälfte oben (Standard, wie oben berechnet) oder unten.
+// Für "unten" wird die gesamte Y-Achse gespiegelt (y -> h - y) - das Raster ist
+// symmetrisch aufgebaut, dadurch bleibt jede gespiegelte Position exakt auf dem
+// echten U-Raster, nur eben von der anderen Kante aus gezählt.
+const mirrored = hasHalfUTop && !state.halfUTop ? ys.map(y => h - y) : ys;
+
+const seen = new Set();
+for(const y of mirrored){
+if(y < -0.01 || y > h + 0.01) continue;
+for(const x of xs){
+const key = x.toFixed(2)+'|'+y.toFixed(2);
+if(seen.has(key)) continue;
+seen.add(key);
+out.push({x, y, r, a});
+}
+}
+return out;
+}
+
+function hexPoints(cx, cy, R, orient, rot){
+rot = rot||0;
+const a0 = (orient==='pointy' ? Math.PI/2 : 0) + rot;
+const pts=[];
+for(let k=0;k<6;k++){
+const a = a0 + k*Math.PI/3;
+pts.push({ x: cx + R*Math.cos(a), y: cy + R*Math.sin(a) });
+}
+return pts;
+}
+
+// Löst einen Ausschnitt in Punkte auf (oder null, wenn nicht anwendbar)
+function cutoutShape(c){
+if(c.type==='rect' && c.w>0.01 && c.h>0.01){
+const a=(c.rot||0)*Math.PI/180, cos=Math.cos(a), sin=Math.sin(a);
+const hw=c.w/2, hh=c.h/2;
+return [[-hw,-hh],[hw,-hh],[hw,hh],[-hw,hh]].map(p=>({
+x: c.x + p[0]*cos - p[1]*sin,
+y: c.y + p[0]*sin + p[1]*cos
+}));
+}
+if(c.type==='hex' && c.r>0.01) return hexPoints(c.x, c.y, c.r, state.hexOrient, (c.rot||0)*Math.PI/180);
+if(c.type==='poly'){
+const pts = parsePolyPts(c.pts);
+if(pts.length>=3) return pts;
+}
+return null;
+}
+function parsePolyPts(str){
+const pts=[];
+// Punkte werden durch Semikolon/Zeilenumbruch getrennt, X/Y innerhalb eines
+// Punktes durch Komma oder Leerzeichen (z. B. "0,0; 40,0" oder "0 0; 40 0").
+for(const part of String(str).split(/[;\n]+/)){
+const t=part.trim(); if(!t) continue;
+const m=t.split(/[,\s]+/).filter(Boolean).map(Number);
+if(m.length>=2 && isFinite(m[0]) && isFinite(m[1])) pts.push({x:m[0],y:m[1]});
+}
+return pts;
+}
+
+// Exakte Überlappungsprüfung zwischen Ausschnitten/Bohrungen - ersetzt die frühere
+// Bounding-Kreis-Näherung. Die war bei länglichen Formen (z. B. breites Rechteck oder
+// Langlöcher) RICHTUNGSABHÄNGIG falsch: in der langen Achse zu locker, in der kurzen
+// Achse viel zu streng (Formen "darüber/darunter" wurden fälschlich als überlappend
+// abgelehnt, obwohl reichlich Abstand vorhanden war).
+function segInt(a,b,c,e){
+const d1x=b.x-a.x, d1y=b.y-a.y, d2x=e.x-c.x, d2y=e.y-c.y;
+const denom = d1x*d2y-d1y*d2x;
+if(Math.abs(denom)<1e-12) return false;
+const t = ((c.x-a.x)*d2y-(c.y-a.y)*d2x)/denom;
+const u = ((c.x-a.x)*d1y-(c.y-a.y)*d1x)/denom;
+return t>-1e-9 && t<1+1e-9 && u>-1e-9 && u<1+1e-9;
+}
+function polysIntersectOrNested(pa, pb){
+for(let i=0;i<pa.length;i++){
+const a=pa[i], b=pa[(i+1)%pa.length];
+for(let j=0;j<pb.length;j++){
+const c=pb[j], e=pb[(j+1)%pb.length];
+if(segInt(a,b,c,e)) return true;
+}
+}
+if(pa.some(p=>pointInPolygon(p.x,p.y,pb))) return true;
+if(pb.some(p=>pointInPolygon(p.x,p.y,pa))) return true;
+return false;
+}
+// Abstand zwischen zwei Polygonen (0, falls sie sich schneiden oder ineinander liegen).
+function polyPolyGap(pa, pb){
+if(polysIntersectOrNested(pa,pb)) return 0;
+let min = Infinity;
+for(const p of pa) min = Math.min(min, distPointToPolygon(p.x,p.y,pb));
+for(const p of pb) min = Math.min(min, distPointToPolygon(p.x,p.y,pa));
+return min;
+}
+function circlePolyGap(c, poly){ return distPointToPolygon(c.x, c.y, poly) - c.r; }
+// Wandelt eine Zone (Kreis/Langloch oder Polygon) in eine einheitliche {circle}|{poly}-
+// Repräsentation um; Langlöcher (a>0, z. B. Montagebohrungen) werden dafür als Kapsel-
+// Polygon angenähert, damit die Prüfung auch für sie exakt bleibt.
+function toZone(x, y, r, a, vertical, pts){
+if(pts) return { poly: pts };
+if(a && a>0.05) return { poly: slotPoints(x, y, r, a, vertical) };
+return { circle: { x, y, r } };
+}
+function zoneGap(za, zb){
+if(za.circle && zb.circle){
+const dx=za.circle.x-zb.circle.x, dy=za.circle.y-zb.circle.y;
+return Math.hypot(dx,dy) - za.circle.r - zb.circle.r;
+}
+if(za.circle) return circlePolyGap(za.circle, zb.poly);
+if(zb.circle) return circlePolyGap(zb.circle, za.poly);
+return polyPolyGap(za.poly, zb.poly);
+}
+
+// Verarbeitet alle Ausschnitte NACHEINANDER und verwirft jeden, der sich mit
+// einer Montagebohrung ODER einem bereits akzeptierten Ausschnitt überlappt.
+// Grund: Überlappende "Löcher" in einer THREE.Shape können die Earcut-
+// Triangulierung zum Einfrieren bringen (kein normaler JS-Fehler, den ein
+// try/catch abfangen könnte) -> das war die Ursache des Absturzes.
+const OVERLAP_GAP = 0.3; // mm Mindestabstand, um exaktes Berühren zu vermeiden
+function processCutouts(w, h, holes){
+const occupied = state.holesEnabled ? holes.map(o=>toZone(o.x, o.y, o.r, o.a, false, null)) : [];
+const polys=[], circles=[], status=[];
+for(const c of state.cutouts){
+let pts = null, zone = null, inside = false, a = 0;
+if(c.type==='circle'){
+if(!(c.r>0.01)){ status.push('incomplete'); continue; } // unvollständige Eingabe -> ignorieren, kein Fehlerzähler
+a = Math.max(0, (c.len||0)/2 - c.r);
+const vertical = !!c.vertical;
+zone = toZone(c.x, c.y, c.r, a, vertical, null);
+const halfX = vertical ? c.r : (a+c.r), halfY = vertical ? (a+c.r) : c.r;
+inside = c.x-halfX>0.05 && c.x+halfX<w-0.05 && c.y-halfY>0.05 && c.y+halfY<h-0.05;
+} else {
+pts = cutoutShape(c);
+if(!pts){ status.push('incomplete'); continue; } // unvollständige Eingabe (z. B. leeres Polygon) -> ignorieren
+zone = toZone(0, 0, 0, 0, false, pts);
+inside = pts.every(q => q.x>0.05 && q.x<w-0.05 && q.y>0.05 && q.y<h-0.05);
+}
+const overlaps = occupied.some(z => zoneGap(zone, z) < OVERLAP_GAP);
+if(!inside || overlaps){ status.push('blocked'); continue; }
+status.push('ok');
+if(c.type==='circle') circles.push({x:c.x, y:c.y, r:c.r, a, vertical: !!c.vertical});
+else polys.push(pts);
+occupied.push(zone);
+}
+const skipped = status.filter(s=>s!=='ok').length;
+return { polys, circles, skipped, status };
+}
+
+// Ausschnitt-Zonen (für Hex-Abstand) – auch ungeprüfte, konservativ groß
+// Exakte Abstandsberechnung Punkt -> Polygon (0, falls Punkt im Polygon liegt).
+// Ersetzt die bisherige grobe Bounding-Kreis-Näherung, die bei breiten/flachen
+// Rechtecken unnötig viel Platz freihielt.
+function pointSegDist(px,py,x1,y1,x2,y2){
+const dx=x2-x1, dy=y2-y1;
+const len2 = dx*dx+dy*dy;
+let t = len2>1e-9 ? ((px-x1)*dx+(py-y1)*dy)/len2 : 0;
+t = Math.max(0, Math.min(1, t));
+return Math.hypot(px-(x1+t*dx), py-(y1+t*dy));
+}
+function pointInPolygon(px, py, poly){
+let inside = false;
+for(let i=0, j=poly.length-1; i<poly.length; j=i++){
+const xi=poly[i].x, yi=poly[i].y, xj=poly[j].x, yj=poly[j].y;
+if(((yi>py)!==(yj>py)) && (px < (xj-xi)*(py-yi)/(yj-yi)+xi)) inside = !inside;
+}
+return inside;
+}
+function distPointToPolygon(px, py, poly){
+if(pointInPolygon(px,py,poly)) return 0;
+let min = Infinity;
+for(let i=0, j=poly.length-1; i<poly.length; j=i++){
+min = Math.min(min, pointSegDist(px,py, poly[j].x, poly[j].y, poly[i].x, poly[i].y));
+}
+return min;
+}
+
+// Honeycomb: Zentrenraster, exakt um Plattenmitte zentriert, mit Materialsteg
+// hexWeb zwischen den Löchern. Ohne Steg berühren sich die Löcher ->
+// Triangulations-Artefakte. Deshalb ist hexWeb zwingend > 0.
+// Gemeinsame Vermeidungszonen für alle Rastermuster (Hexagon, Rundloch, Lamellen):
+// Montagebohrungen + alle Ausschnitte (kreisförmig exakt, sonst als Polygon exakt).
+// Dichte-Gradient: generischer Zusatz für alle Rastermuster (Hex/Rundloch/Lamellen).
+// hashRandom liefert einen deterministischen Pseudo-Zufallswert je Position+Seed
+// (positionsbasiert statt eines Zufalls-Streams -> reproduzierbar, unabhängig von
+// der Berechnungsreihenfolge der Zellen, und über den Konfigurationslink teilbar).
+// Seed-basierter PRNG (mulberry32) - liefert eine deterministische Zahlenfolge
+// aus einem Ganzzahl-Seed. Anders als hashRandom (positionsbasiert) wird hier
+// ein echter Zufalls-STROM gebraucht, z. B. für die Bubble-Platzierung.
+function mulberry32(seed){
+let a = seed >>> 0;
+return function(){
+a |= 0; a = a + 0x6D2B79F5 | 0;
+let t = Math.imul(a ^ a >>> 15, 1 | a);
+t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+return ((t ^ t >>> 14) >>> 0) / 4294967296;
+};
+}
+
+function hashRandom(x, y, seed){
+let n = Math.sin(x*127.1 + y*311.7 + seed*74.7) * 43758.5453;
+return n - Math.floor(n);
+}
+// Gradient-Faktor (0..1) an Position (cx,cy): 1 = volle Dichte/Größe, 0 = Minimum am Gradienten-Ende.
+function gradientFactor(cx, cy, w, h){
+if(!state.gradientEnabled) return 1;
+let t;
+switch(state.gradientDir){
+case 'right': t = cx/w; break;
+case 'left': t = 1-cx/w; break;
+case 'up': t = cy/h; break;
+case 'down': t = 1-cy/h; break;
+case 'radialOut': { const dx=cx-w/2, dy=cy-h/2, maxD=Math.hypot(w/2,h/2)||1; t = Math.hypot(dx,dy)/maxD; break; }
+case 'radialIn': { const dx=cx-w/2, dy=cy-h/2, maxD=Math.hypot(w/2,h/2)||1; t = 1-Math.hypot(dx,dy)/maxD; break; }
+default: t = 0;
+}
+t = Math.max(0, Math.min(1, t));
+return 1 - state.gradientStrength*t;
+}
+// Wendet den Gradienten auf einen einzelnen Radius an: 'density' verwirft Zellen
+// zufällig (aber reproduzierbar) je nach Position, 'size' skaliert den Radius
+// (Mindestfaktor 0.15, damit keine entartete Geometrie mit Radius ~0 entsteht).
+// Rückgabe null = Zelle auslassen.
+function applyGradient(cx, cy, w, h, baseR){
+if(!state.gradientEnabled) return baseR;
+const f = gradientFactor(cx, cy, w, h);
+if(state.gradientMode==='density'){
+return hashRandom(cx, cy, state.seed) <= f ? baseR : null;
+}
+return baseR * Math.max(0.15, f);
+}
+// Variante für Langlöcher (Lamellen): skaliert r UND a gemeinsam, damit die
+// Kapselform proportional bleibt.
+function applyGradientPair(cx, cy, w, h, baseR, baseA){
+if(!state.gradientEnabled) return {r:baseR, a:baseA};
+const f = gradientFactor(cx, cy, w, h);
+if(state.gradientMode==='density'){
+return hashRandom(cx, cy, state.seed) <= f ? {r:baseR, a:baseA} : null;
+}
+const factor = Math.max(0.15, f);
+return {r:baseR*factor, a:baseA*factor};
+}
+
+function computeAvoidanceZones(holes){
+const circleZones = state.holesEnabled ? holes.map(o=>({x:o.x, y:o.y, r:o.r + (o.a||0) + state.holeClearance})) : [];
+for(const c of state.cutouts){
+if(c.type!=='circle' || !(c.r>0.01)) continue;
+const a = Math.max(0, (c.len||0)/2 - c.r);
+if(a>0.05) continue; // Langloch -> weiter unten exakt als Polygon berücksichtigt
+circleZones.push({x:c.x, y:c.y, r:c.r + state.holeClearance});
+}
+const polyZones = [];
+for(const c of state.cutouts){
+if(c.type==='circle'){
+const a = Math.max(0, (c.len||0)/2 - c.r);
+if(a>0.05) polyZones.push(slotPoints(c.x, c.y, c.r + state.holeClearance, a, !!c.vertical));
+continue;
+}
+const pts = cutoutShape(c);
+if(pts && pts.length>=3) polyZones.push(pts);
+}
+return { circleZones, polyZones };
+}
+function zoneBlocked(cx, cy, R, circleZones, polyZones){
+for(const z of circleZones){
+const dx=cx-z.x, dy=cy-z.y, rr=R+z.r;
+if(dx*dx+dy*dy < rr*rr) return true;
+}
+for(const poly of polyZones){
+if(distPointToPolygon(cx, cy, poly) < R + state.holeClearance) return true;
+}
+return false;
+}
+
+// Rand-Zuschnitt (statt Aussparen): Sutherland-Hodgman-Polygon-Clipping gegen ein
+// achsenparalleles Rechteck [x0,x1]x[y0,y1]. Funktioniert für beliebige (auch
+// nicht-konvexe) Eingabepolygone, solange das Clip-Rechteck konvex ist.
+function clipPolyToRect(poly, x0, y0, x1, y1){
+function clipEdge(pts, inside, intersect){
+if(!pts.length) return pts;
+const out = [];
+for(let i=0;i<pts.length;i++){
+const cur = pts[i], prev = pts[(i+pts.length-1)%pts.length];
+const curIn = inside(cur), prevIn = inside(prev);
+if(curIn){
+if(!prevIn) out.push(intersect(prev,cur));
+out.push(cur);
+} else if(prevIn){
+out.push(intersect(prev,cur));
+}
+}
+return out;
+}
+let pts = poly;
+pts = clipEdge(pts, p=>p.x>=x0, (a,b)=>({x:x0, y:a.y+(x0-a.x)/(b.x-a.x)*(b.y-a.y)}));
+pts = clipEdge(pts, p=>p.x<=x1, (a,b)=>({x:x1, y:a.y+(x1-a.x)/(b.x-a.x)*(b.y-a.y)}));
+pts = clipEdge(pts, p=>p.y>=y0, (a,b)=>({x:a.x+(y0-a.y)/(b.y-a.y)*(b.x-a.x), y:y0}));
+pts = clipEdge(pts, p=>p.y<=y1, (a,b)=>({x:a.x+(y1-a.y)/(b.y-a.y)*(b.x-a.x), y:y1}));
+// Aufräumen: Punkte, die exakt AUF einer Clip-Kante liegen, können bei mehrfachem
+// Schneiden (4 Kanten nacheinander) doppelte bzw. quasi-identische Punkte erzeugen
+// (Kantenlänge ~0). Das bringt die 3D-Dreiecks-Triangulierung durcheinander und lässt
+// einen sichtbaren Materialsteg stehen bleiben, wo eigentlich sauber geöffnet sein
+// sollte -> daher direkt hier bereinigen, statt es jedem Aufrufer zu überlassen.
+return dedupePoly(pts);
+}
+// Entfernt aufeinanderfolgende (quasi-)identische Punkte sowie einen Duplikat-Schlusspunkt.
+function dedupePoly(pts, eps){
+eps = eps || 1e-4;
+const out = [];
+for(const p of pts){
+const last = out[out.length-1];
+if(!last || Math.hypot(p.x-last.x, p.y-last.y) > eps) out.push(p);
+}
+if(out.length>1 && Math.hypot(out[0].x-out[out.length-1].x, out[0].y-out[out.length-1].y) < eps) out.pop();
+return out;
+}
+// Schneidet eine Kanten-Kerbe (z. B. ein Montageloch, das exakt auf der oberen/unteren
+// Plattenkante sitzt) DIREKT in die Außenkontur ein, statt sie als separates, nur fast
+// berührendes Loch zu behandeln. Grund: eine separate Lochschleife bleibt bei der 3D-
+// Extrusion eine eigene, wenn auch hauchdünne Wand (sichtbarer "Steg") - als Teil der
+// Außenkontur selbst gibt es dort schlicht keine zweite Wand mehr.
+// notchPts: bereits gegen die Kontur geclippte Lochkontur (Punkte mit y auf der Kante,
+// Rest darunter/darüber). Gibt die neue Kontur zurück, oder null, falls der Fall nicht
+// eindeutig einer geraden Kante zugeordnet werden kann (Aufrufer nutzt dann einen Fallback).
+// Extrahiert aus einer (bereits gegen die Original-Kontur geclippten) Lochkontur die
+// "Kerbe" in korrekt orientierter Reihenfolge (beginnend/endend auf der betroffenen
+// Kante) - OHNE sie schon einzufügen. Rückgabe: {edgeY, pts} oder null.
+function extractNotch(clipped, w, h){
+if(clipped.length<3) return null;
+const n = clipped.length;
+let edgeY = null, i1 = -1, i2 = -1;
+for(const ey of [h, 0]){
+const idxs = [];
+for(let i=0;i<n;i++) if(Math.abs(clipped[i].y-ey)<0.5) idxs.push(i);
+if(idxs.length===2){ edgeY = ey; [i1,i2] = idxs; break; }
+}
+if(edgeY===null) return null;
+if((i2-i1+n)%n !== 1 && (i1-i2+n)%n !== 1) return null;
+const startIdx = (i2-i1+n)%n===1 ? i2 : i1;
+let pts = [];
+for(let k=0;k<n;k++) pts.push(clipped[(startIdx+k)%n]);
+const onTop = Math.abs(edgeY - h) < 0.5;
+const first = pts[0], last = pts[pts.length-1];
+// Obere Kante: rechts->links (fallendes X). Untere Kante: links->rechts (steigendes X).
+if(onTop){ if(first.x < last.x) pts = pts.slice().reverse(); }
+else { if(first.x > last.x) pts = pts.slice().reverse(); }
+return { edgeY, pts };
+}
+// Fügt MEHRERE bereits extrahierte Kerben (z. B. linke UND rechte Lochspalte auf
+// derselben .5U-Kante) in EINEM Schritt in die Kontur ein. Wichtig: alle Kerben wurden
+// gegen die ORIGINALE, garantiert konvexe Kontur geclippt (siehe extractNotch-Aufrufer) -
+// eine einzelne, sequenzielle Einfügung würde die Kontur zwischenzeitlich konkav machen
+// und die nächste Clip-Operation könnte fehlschlagen (beobachteter Bug: die zweite Kerbe
+// verschwand komplett, weil ihr Clip gegen die bereits eingeschnittene, nicht mehr
+// konvexe Kontur ein leeres Ergebnis lieferte).
+function insertNotches(outline, notches, w, h){
+if(!notches.length) return outline;
+const top = notches.filter(n => Math.abs(n.edgeY-h)<0.5);
+const bottom = notches.filter(n => Math.abs(n.edgeY-0)<0.5);
+let result = outline;
+if(top.length){
+top.sort((a,b) => b.pts[0].x - a.pts[0].x); // rechts -> links
+const combined = [].concat(...top.map(n=>n.pts));
+let idx = -1;
+for(let i=result.length-1;i>=0;i--){ if(Math.abs(result[i].y-h)<1e-6){ idx=i; break; } }
+if(idx>=0) result = result.slice(0,idx).concat(combined).concat(result.slice(idx));
+}
+if(bottom.length){
+bottom.sort((a,b) => a.pts[0].x - b.pts[0].x); // links -> rechts
+const combined = [].concat(...bottom.map(n=>n.pts));
+const idx = result.findIndex(p => Math.abs(p.y-0)<1e-6);
+if(idx>=0) result = result.slice(0,idx+1).concat(combined).concat(result.slice(idx+1));
+}
+return result;
+}
+// Polygonfläche (Shoelace-Formel) - zum Vergleich Fragmentgröße vs. Originalzelle.
+function polygonArea(pts){
+let a = 0;
+for(let i=0;i<pts.length;i++){
+const p1=pts[i], p2=pts[(i+1)%pts.length];
+a += p1.x*p2.y - p2.x*p1.y;
+}
+return Math.abs(a)/2;
+}
+// Schneidet ein (konvexes) Polygon an einer beliebigen Halbebene {P : nx*P.x+ny*P.y <= c}.
+// Grundbaustein für Voronoi: jede Zelle ist der Schnitt vieler Halbebenen -> immer konvex,
+// damit garantiert sicher für 3D-Extrusion (keine Selbstüberschneidungen möglich).
+function clipHalfPlane(poly, nx, ny, c){
+if(!poly.length) return poly;
+const inside = p => nx*p.x+ny*p.y <= c+1e-9;
+const intersect = (a,b) => {
+const da = nx*a.x+ny*a.y-c, db = nx*b.x+ny*b.y-c;
+const t = da/(da-db);
+return { x: a.x+t*(b.x-a.x), y: a.y+t*(b.y-a.y) };
+};
+const out=[];
+for(let i=0;i<poly.length;i++){
+const cur=poly[i], prev=poly[(i+poly.length-1)%poly.length];
+const curIn=inside(cur), prevIn=inside(prev);
+if(curIn){ if(!prevIn) out.push(intersect(prev,cur)); out.push(cur); }
+else if(prevIn){ out.push(intersect(prev,cur)); }
+}
+return out;
+}
+// Schneidet ein Polygon exakt gegen ein beliebiges KONVEXES Clip-Polygon (statt nur ein
+// achsenparalleles Rechteck) - schneidet nacheinander an jeder Kante des Clip-Polygons als
+// Halbebene. Nötig, weil die Plattenkontur abgerundete Ecken hat: ein Rechteck-Clip in
+// Eckennähe würde nicht exakt zur echten (gerundeten) Kontur passen.
+// Erwartet clipPoly in mathematisch positivem Umlaufsinn (Gegenuhrzeigersinn), wie
+// outlinePoints() ihn liefert.
+function clipPolyToConvexPoly(poly, clipPoly){
+let pts = poly;
+for(let i=0;i<clipPoly.length && pts.length;i++){
+const a = clipPoly[i], b = clipPoly[(i+1)%clipPoly.length];
+const nx = b.y-a.y, ny = -(b.x-a.x);
+const c = nx*a.x + ny*a.y;
+pts = clipHalfPlane(pts, nx, ny, c);
+}
+return pts;
+}
+// Voronoi/Rissmuster: zufällige Sites (Seed-basiert, reproduzierbar), jede Zelle entsteht
+// durch sukzessives Clippen des Arbeitsbereich-Rechtecks an den Mittelsenkrechten zu allen
+// anderen Sites (Steg = Halbebene wird um wall/2 Richtung eigener Site verschoben, dadurch
+// bleibt zwischen Nachbarzellen automatisch ein Spalt exakt in Stegbreite).
+// Bohrungen/Ausschnitte wirken als zusätzliche "Hindernis-Sites": die Trennlinie wird dabei
+// als Tangente an den Hindernis-Kreis gelegt - mathematisch garantiert außerhalb des Kreises,
+// keine Überlappung möglich (kein Näherungswert, echte Tangentenbedingung).
+function computeVoronoi(holes){
+if(state.pattern!=='voronoi') return {polys:[], circles:[]};
+const w = state.panelWidth, h = panelH();
+const m = state.patternMargin, mx = state.marginX;
+if(w-2*mx<=0 || h-2*m<=0) return {polys:[], circles:[]};
+const { circleZones, polyZones } = computeAvoidanceZones(holes);
+const obstacles = circleZones.slice();
+// Polygon-Ausschnitte (Rechteck/Hexagon/Polygon) als Kette kleiner Kreise entlang der
+// tatsächlichen Kontur abbilden statt eines groben Bounding-Kreises um den Mittelpunkt -
+// letzterer war bei länglichen Formen (z. B. breites, flaches Rechteck) massiv zu groß
+// und hat Voronoi-Sites weit über den eigentlichen Ausschnitt hinaus verdrängt, was
+// sichtbare Lücken im Muster erzeugen konnte.
+// WICHTIG: Stützpunkt-Abstand und -Radius müssen so gewählt sein, dass sich benachbarte
+// Kreise garantiert überlappen (Radius*2 > Abstand) - sonst können Zellen durch die Lücken
+// zwischen den Kreisen hindurch doch noch in den Ausschnitt hineinragen (realer Bug, der
+// genau so auftrat: ein Nutzer-Rechteck wurde durch eine Voronoi-Zelle überlappt).
+const step = 3; // mm Abstand zwischen Stützpunkten entlang der Kontur
+const sampleR = Math.max(state.holeClearance, 2.2); // Mindestradius verhindert Lücken zwischen den Stützkreisen
+for(const poly of polyZones){
+for(let i=0;i<poly.length;i++){
+const a=poly[i], b=poly[(i+1)%poly.length];
+const segLen = Math.hypot(b.x-a.x, b.y-a.y);
+const n = Math.max(1, Math.ceil(segLen/step));
+for(let k=0;k<n;k++){
+const t = k/n;
+obstacles.push({x:a.x+t*(b.x-a.x), y:a.y+t*(b.y-a.y), r: sampleR});
+}
+}
+}
+
+const rand = mulberry32(state.seed);
+const count = Math.max(2, Math.round(state.voronoiCount));
+const wall = Math.max(0.3, state.voronoiWall);
+const usableW = w-2*mx, usableH = h-2*m;
+const minSiteDist = Math.max(3, 0.55*Math.sqrt((usableW*usableH)/count));
+
+const sites = [];
+let attempts=0;
+const maxAttempts = count*400;
+while(sites.length<count && attempts<maxAttempts){
+attempts++;
+const x = mx + rand()*usableW;
+const y = m + rand()*usableH;
+let ok = true;
+for(const s of sites){ const dx=x-s.x, dy=y-s.y; if(dx*dx+dy*dy < minSiteDist*minSiteDist){ ok=false; break; } }
+if(ok) for(const o of obstacles){ const dx=x-o.x, dy=y-o.y; if(dx*dx+dy*dy < (o.r+minSiteDist*0.4)*(o.r+minSiteDist*0.4)){ ok=false; break; } }
+// WICHTIG: zusätzlich exakt prüfen, ob der Kandidat innerhalb eines Ausschnitts liegt.
+// Die Kontur-Stützkreise (oben) schützen nur den RAND; bei einem großen Ausschnitt kann
+// eine Site trotzdem mittig im Inneren landen (weiter von jedem Stützpunkt entfernt als
+// deren Radius), was zu einer fehlerhaften Zelle MITTEN im Ausschnitt führt (realer Bug:
+// sichtbare Trennlinien innerhalb von Rechteck/Hexagon-Ausschnitten).
+if(ok) for(const poly of polyZones){
+if(distPointToPolygon(x,y,poly) < state.holeClearance){ ok=false; break; }
+}
+if(ok && state.gradientEnabled){
+const f = gradientFactor(x,y,w,h);
+if(hashRandom(x,y,state.seed+7919) > f) ok=false;
+}
+if(ok) sites.push({x,y});
+}
+if(sites.length<2) return {polys:[], circles:[]};
+
+const rect = [{x:mx,y:m},{x:w-mx,y:m},{x:w-mx,y:h-m},{x:mx,y:h-m}];
+const polys=[];
+for(let i=0;i<sites.length;i++){
+let cell = rect.slice();
+const si = sites[i];
+for(let j=0;j<sites.length && cell.length>=3;j++){
+if(i===j) continue;
+const sj=sites[j];
+const dx=sj.x-si.x, dy=sj.y-si.y;
+const dist=Math.hypot(dx,dy);
+if(dist<1e-6) continue;
+const ux=dx/dist, uy=dy/dist;
+const midx=(si.x+sj.x)/2, midy=(si.y+sj.y)/2;
+const bx = midx - ux*(wall/2), by = midy - uy*(wall/2);
+cell = clipHalfPlane(cell, ux, uy, ux*bx+uy*by);
+}
+for(const o of obstacles){
+if(cell.length<3) break;
+const dx=o.x-si.x, dy=o.y-si.y;
+const dist=Math.hypot(dx,dy);
+if(dist<1e-6 || dist>=o.r+300) continue; // zu weit weg für Effekt -> überspringen (Performance)
+const ux=dx/dist, uy=dy/dist;
+const tx=o.x-ux*o.r, ty=o.y-uy*o.r; // Tangentenpunkt auf dem Hindernis-Kreis
+cell = clipHalfPlane(cell, ux, uy, ux*tx+uy*ty);
+}
+if(cell.length>=3) polys.push(cell);
+}
+return {polys, circles:[]};
+}
+
+// im Arbeitsbereich liegt; nur wenn er den Rand tatsächlich schneidet UND
+// "Am Rand abschneiden" aktiv ist, wird er als Vieleck angenähert und zugeschnitten.
+// Zu kleine Randfragmente (< edgeClipMinPct % der Originalfläche) werden verworfen.
+function placeCircleOrClip(cx, cy, r, mx, m, w, h){
+if(cx-r>=mx && cx+r<=w-mx && cy-r>=m && cy+r<=h-m) return { circle:{x:cx, y:cy, r, a:0} };
+if(!state.edgeClip) return null;
+const N=32, pts=[];
+for(let i=0;i<N;i++){ const t=i/N*2*Math.PI; pts.push({x:cx+r*Math.cos(t), y:cy+r*Math.sin(t)}); }
+const clipped = clipPolyToRect(pts, mx, m, w-mx, h-m);
+if(clipped.length<3) return null;
+const origArea = Math.PI*r*r;
+if(polygonArea(clipped) < origArea*(state.edgeClipMinPct/100)) return null;
+return { poly: clipped };
+}
+// Langlöcher (Lamellen): analog, nutzt die vorhandene Kapsel-Punktapproximation.
+function placeSlotOrClip(cx, cy, r, a, vertical, mx, m, w, h){
+const halfX = vertical ? r : (a+r), halfY = vertical ? (a+r) : r;
+if(cx-halfX>=mx && cx+halfX<=w-mx && cy-halfY>=m && cy+halfY<=h-m) return { circle:{x:cx, y:cy, r, a, vertical} };
+if(!state.edgeClip) return null;
+const pts = slotPoints(cx, cy, r, a, vertical);
+const clipped = clipPolyToRect(pts, mx, m, w-mx, h-m);
+if(clipped.length<3) return null;
+if(polygonArea(clipped) < polygonArea(pts)*(state.edgeClipMinPct/100)) return null;
+return { poly: clipped };
+}
+
+function computeHexes(holes){
+if(state.pattern!=='hex') return [];
+const R = state.hexD/2, m = state.patternMargin;
+const mx = state.marginX; // links/rechts vollständig unabhängig vom oberen/unteren Rand
+const G = Math.max(0.5, state.hexWeb);
+const Rg = R + G/Math.sqrt(3); // Zentren-Radius des Rasters
+const w = state.panelWidth, h = panelH();
+const s3 = Math.sqrt(3);
+const { circleZones, polyZones } = computeAvoidanceZones(holes);
+// Ohne Rand-Zuschnitt: Zelle muss komplett im Arbeitsbereich liegen.
+// Mit Rand-Zuschnitt: Zelle darf den Rand überlappen, wird dann zugeschnitten.
+const marginOk = (cx,cy) => state.edgeClip
+? (cx+R>mx && cx-R<w-mx && cy+R>m && cy-R<h-m)
+: (cx-R>=mx && cx+R<=w-mx && cy-R>=m && cy+R<=h-m);
+const ok = (cx,cy) => marginOk(cx,cy) && !zoneBlocked(cx, cy, R, circleZones, polyZones);
+const pushCell = (cells,cx,cy,orient) => {
+const gr = applyGradient(cx,cy,w,h,R);
+if(gr===null) return;
+let poly = hexPoints(cx,cy,gr,orient);
+if(state.edgeClip){
+const origArea = polygonArea(poly);
+poly = clipPolyToRect(poly, mx, m, w-mx, h-m);
+if(poly.length<3) return;
+if(polygonArea(poly) < origArea*(state.edgeClipMinPct/100)) return;
+}
+cells.push(poly);
+};
+
+const cells=[];
+const mod2 = n => ((n%2)+2)%2;
+
+if(state.hexOrient==='pointy'){
+// Raster exakt um (w/2, h/2) zentriert
+const dx=s3*Rg, dy=1.5*Rg;
+const iMax = Math.ceil((h/2+dy)/dy);
+for(let i=-iMax;i<=iMax;i++){
+const y = h/2 + i*dy;
+const xoff = mod2(i) ? dx/2 : 0;
+const jMax = Math.ceil((w/2+dx)/dx);
+for(let j=-jMax;j<=jMax;j++){
+const cx = w/2 + j*dx + xoff;
+if(ok(cx,y)) pushCell(cells,cx,y,'pointy');
+}
+}
+} else {
+const dx=1.5*Rg, dy=s3*Rg;
+const jMax = Math.ceil((w/2+dx)/dx);
+for(let j=-jMax;j<=jMax;j++){
+const x = w/2 + j*dx;
+const yoff = mod2(j) ? dy/2 : 0;
+const iMax = Math.ceil((h/2+dy)/dy);
+for(let i=-iMax;i<=iMax;i++){
+const cy = h/2 + i*dy + yoff;
+if(ok(x,cy)) pushCell(cells,x,cy,'flat');
+}
+}
+}
+return cells;
+}
+
+// Rundloch-Raster: dieselbe versetzte (gestaffelte) Packung wie beim Hexagon-Muster,
+// aber mit Kreisen statt Sechsecken - klassisches perforiertes Blech.
+function computeRoundHoles(holes){
+if(state.pattern!=='round') return {circles:[], polys:[]};
+const R = state.roundD/2, m = state.patternMargin;
+const mx = state.marginX; // links/rechts vollständig unabhängig vom oberen/unteren Rand
+const G = Math.max(0.3, state.roundGap);
+const D = 2*R + G; // Mittenabstand: Radius+Radius+Steg
+const w = state.panelWidth, h = panelH();
+const s3 = Math.sqrt(3);
+const { circleZones, polyZones } = computeAvoidanceZones(holes);
+const dx = D, dy = D*s3/2;
+const mod2 = n => ((n%2)+2)%2;
+const circles=[], polys=[];
+const iMax = Math.ceil((h/2+dy)/dy);
+for(let i=-iMax;i<=iMax;i++){
+const cy = h/2 + i*dy;
+const xoff = mod2(i) ? dx/2 : 0;
+const jMax = Math.ceil((w/2+dx)/dx);
+for(let j=-jMax;j<=jMax;j++){
+const cx = w/2 + j*dx + xoff;
+const near = state.edgeClip ? (cx+R>mx && cx-R<w-mx && cy+R>m && cy-R<h-m) : (cx-R>=mx && cx+R<=w-mx && cy-R>=m && cy+R<=h-m);
+if(!near) continue;
+if(zoneBlocked(cx, cy, R, circleZones, polyZones)) continue;
+const gr = applyGradient(cx, cy, w, h, R);
+if(gr===null) continue;
+const res = placeCircleOrClip(cx, cy, gr, mx, m, w, h);
+if(res && res.circle) circles.push(res.circle);
+else if(res && res.poly) polys.push(res.poly);
+}
+}
+return {circles, polys};
+}
+
+// Bubble/Zufallskreise: Dart-Throwing-Verfahren (vereinfachtes Poisson-Disc-Sampling)
+// mit variabler Lochgröße. Kollisionsprüfung nutzt IMMER den vollen (Vor-Gradient-)
+// Radius als Platzbedarf, damit die Löcher auch mit aktivem Größe-Gradient nie
+// überlappen - nur die tatsächlich gezeichnete Größe wird ggf. verkleinert.
+function computeBubbles(holes){
+if(state.pattern!=='bubble') return {circles:[], polys:[]};
+const w = state.panelWidth, h = panelH();
+const m = state.patternMargin, mx = state.marginX; // links/rechts vollständig unabhängig
+const { circleZones, polyZones } = computeAvoidanceZones(holes);
+const minR = state.bubbleMinD/2, maxR = Math.max(minR, state.bubbleMaxD/2);
+const gap = Math.max(0, state.bubbleGap);
+// Sampling-Bereich: ohne Zuschnitt exakt der Arbeitsbereich (Zentren bleiben komplett
+// innerhalb); mit Zuschnitt zusätzlich ein Rand von maxR nach außen, damit Zellen
+// den Plattenrand überhaupt erst wirklich schneiden können.
+const pad = state.edgeClip ? maxR : 0;
+const x0 = mx-pad, x1 = w-mx+pad, y0 = m-pad, y1 = h-m+pad;
+const usableW = x1-x0, usableH = y1-y0;
+if(usableW <= 2*minR || usableH <= 2*minR) return {circles:[], polys:[]};
+const rand = mulberry32(state.seed);
+const placed = []; // {x,y,r} - r ist der reservierte Platzbedarf (Kollisionsradius)
+const circles=[], polys=[];
+const maxAttempts = Math.min(120000, Math.max(500, Math.round((usableW*usableH)/(minR*minR)) * 4));
+const maxCount = 4500; // Sicherheitsgrenze gegen ausufernde Laufzeit bei sehr kleinen Radien
+let attempts = 0, failStreak = 0;
+const maxFailStreak = 1200; // Abbruch, wenn lange nichts mehr passt (Fläche "voll")
+while(attempts < maxAttempts && failStreak < maxFailStreak && placed.length < maxCount){
+attempts++;
+const r = minR + rand()*(maxR-minR);
+if(usableW-2*r <= 0 || usableH-2*r <= 0){ failStreak++; continue; }
+const cx = x0 + r + rand()*(usableW-2*r);
+const cy = y0 + r + rand()*(usableH-2*r);
+let ok = true;
+for(const p of placed){
+const dx=cx-p.x, dy=cy-p.y, rr=r+p.r+gap;
+if(dx*dx+dy*dy < rr*rr){ ok=false; break; }
+}
+if(ok && zoneBlocked(cx, cy, r, circleZones, polyZones)) ok=false;
+if(!ok){ failStreak++; continue; }
+placed.push({x:cx, y:cy, r});
+const gr = applyGradient(cx, cy, w, h, r);
+if(gr!==null){
+const res = placeCircleOrClip(cx, cy, gr, mx, m, w, h);
+if(res && res.circle) circles.push(res.circle);
+else if(res && res.poly) polys.push(res.poly);
+}
+failStreak = 0;
+}
+return {circles, polys};
+}
+
+// Lüftungsschlitze/Lamellen: einfaches Zeilen-/Spalten-Raster aus Langlöchern
+// (nutzt dieselbe Kapsel-Geometrie wie Montage-Langlöcher, waagerecht oder senkrecht).
+function computeSlots(holes){
+if(state.pattern!=='slots') return {circles:[], polys:[]};
+const len = state.slotLen, thick = state.slotThick;
+const r = thick/2, aHalf = Math.max(0, (len-thick)/2);
+const vertical = !!state.slotVertical;
+const m = state.patternMargin, mx = state.marginX; // links/rechts vollständig unabhängig
+const w = state.panelWidth, h = panelH();
+const { circleZones, polyZones } = computeAvoidanceZones(holes);
+
+const halfX = vertical ? r : (aHalf+r);
+const halfY = vertical ? (aHalf+r) : r;
+const pitchX = 2*halfX + state.slotGapX;
+const pitchY = 2*halfY + state.slotGapY;
+
+const extra = state.edgeClip ? 1 : 0; // ein zusätzlicher, dann zugeschnittener Rand-Schlitz je Seite
+const cols = Math.max(1, Math.floor((w - 2*mx + state.slotGapX) / pitchX)) + 2*extra;
+const rows = Math.max(1, Math.floor((h - 2*m + state.slotGapY) / pitchY)) + 2*extra;
+const totalW = cols*pitchX - state.slotGapX;
+const totalH = rows*pitchY - state.slotGapY;
+const x0 = w/2 - totalW/2 + halfX;
+const y0 = h/2 - totalH/2 + halfY;
+const boundR = Math.hypot(halfX, halfY); // Bounding-Kreis-Näherung für die Ausweichprüfung
+
+const circles=[], polys=[];
+for(let ri=0; ri<rows; ri++){
+const cy = y0 + ri*pitchY;
+for(let ci=0; ci<cols; ci++){
+const cx = x0 + ci*pitchX;
+const near = state.edgeClip ? (cx+halfX>mx && cx-halfX<w-mx && cy+halfY>m && cy-halfY<h-m) : (cx-halfX>=mx && cx+halfX<=w-mx && cy-halfY>=m && cy+halfY<=h-m);
+if(!near) continue;
+if(zoneBlocked(cx, cy, boundR, circleZones, polyZones)) continue;
+const gr = applyGradientPair(cx, cy, w, h, r, aHalf);
+if(!gr) continue;
+const res = placeSlotOrClip(cx, cy, gr.r, gr.a, vertical, mx, m, w, h);
+if(res && res.circle) circles.push(res.circle);
+else if(res && res.poly) polys.push(res.poly);
+}
+}
+return {circles, polys};
+}
+
+// Langloch (Stadium) als Punktpolygon, für SVG + DXF
+function slotPoints(x, y, r, a, vertical){
+if(a < 0.05){
+const pts=[];
+for(let i=0;i<24;i++){ const t=i/24*2*Math.PI; pts.push({x:x+r*Math.cos(t), y:y+r*Math.sin(t)}); }
+return pts;
+}
+const N=12, pts=[];
+if(vertical){
+pts.push({x:x-r,y:y-a},{x:x-r,y:y+a});
+for(let i=1;i<=N;i++){ const t=Math.PI - i/N*Math.PI; pts.push({x:x+r*Math.cos(t), y:y+a+r*Math.sin(t)}); }
+pts.push({x:x+r,y:y+a},{x:x+r,y:y-a});
+for(let i=1;i<=N;i++){ const t=0 - i/N*Math.PI; pts.push({x:x+r*Math.cos(t), y:y-a+r*Math.sin(t)}); }
+return pts;
+}
+pts.push({x:x-a,y:y+r},{x:x+a,y:y+r});
+for(let i=1;i<=N;i++){ const t=Math.PI/2 - i/N*Math.PI; pts.push({x:x+a+r*Math.cos(t), y:y+r*Math.sin(t)}); }
+pts.push({x:x+a,y:y-r},{x:x-a,y:y-r});
+for(let i=1;i<=N;i++){ const t=-Math.PI/2 - i/N*Math.PI; pts.push({x:x-a+r*Math.cos(t), y:y+r*Math.sin(t)}); }
+return pts;
+}
+
+function buildData(){
+const w = state.panelWidth, h = panelH();
+const corner = cornerParam(w, h);
+const holes = computeHoles();
+// Montagelöcher, die über den Plattenrand hinausragen (z. B. das rastertreue Loch an
+// einer .5U-Kante), werden nicht als separates (nur fast berührendes) Loch behandelt,
+// sondern DIREKT als Kerbe in die Außenkontur eingeschnitten (spliceNotch). Das ist
+// wichtig für die 3D-Extrusion: eine separate Lochschleife bleibt dort immer eine
+// eigene, wenn auch hauchdünne Wand ("Steg") - als Teil der Außenkontur selbst gibt es
+// diese zweite Wand gar nicht erst. Position bleibt exakt auf der Rasterposition.
+let outline = outlinePoints(w, h, corner);
+const holeCircles = [], holePolys = [];
+const pendingNotches = [];
+for(const o of holes){
+const halfX = (o.a||0) + o.r, halfY = o.r;
+const exceeds = (o.x-halfX < -0.01) || (o.x+halfX > w+0.01) || (o.y-halfY < -0.01) || (o.y+halfY > h+0.01);
+if(exceeds){
+const pts = slotPoints(o.x, o.y, o.r, o.a||0, false);
+// Immer gegen die ORIGINALE, garantiert konvexe Kontur clippen (nicht gegen eine evtl.
+// bereits um andere Kerben veränderte Kontur - eine Kontur mit Kerbe ist nicht mehr
+// konvex, ein Clip dagegen kann fehlschlagen und das Loch komplett verschwinden lassen).
+const clipped = dedupePoly(clipPolyToConvexPoly(pts, outline));
+const notch = extractNotch(clipped, w, h);
+if(notch){
+pendingNotches.push(notch);
+} else if(clipped.length>=3){
+// Unerwarteter Fall (z. B. Kerbe reicht nicht sauber bis an eine gerade Kante) ->
+// Fallback: als separates Loch mit minimalem Sicherheitsabstand, statt abzustürzen.
+const EDGE_EPS = 0.02;
+const insetCorner = cornerParam(w-2*EDGE_EPS, h-2*EDGE_EPS);
+const insetOutline = outlinePoints(w-2*EDGE_EPS, h-2*EDGE_EPS, insetCorner).map(p=>({x:p.x+EDGE_EPS, y:p.y+EDGE_EPS}));
+const fallback = dedupePoly(clipPolyToConvexPoly(pts, insetOutline));
+if(fallback.length>=3) holePolys.push(fallback);
+}
+} else {
+holeCircles.push(o);
+}
+}
+outline = insertNotches(outline, pendingNotches, w, h);
+const hexes = computeHexes(holes);
+const round = computeRoundHoles(holes);
+const slots = computeSlots(holes);
+const bubbles = computeBubbles(holes);
+const voronoi = computeVoronoi(holes);
+const cut = processCutouts(w, h, holes);
+const patternCount = hexes.length + round.circles.length + round.polys.length
++ slots.circles.length + slots.polys.length + bubbles.circles.length + bubbles.polys.length + voronoi.polys.length;
+return {
+w, h, corner, outline,
+circles: holeCircles.concat(cut.circles).concat(round.circles).concat(slots.circles).concat(bubbles.circles),
+polys: holePolys.concat(hexes).concat(cut.polys).concat(round.polys).concat(slots.polys).concat(bubbles.polys).concat(voronoi.polys),
+holesCount: holes.length,
+hexCount: patternCount,
+skippedCutouts: cut.skipped,
+cutoutStatus: cut.status
+};
+}
+
+// Außenkontur (Punktliste, für THREE.Shape + DXF) – Rund oder 45°-Fase
+function outlinePoints(w, h, c){
+if(c.mode==='chamfer'){
+const s = Math.max(0, c.v);
+return [{x:0,y:s},{x:s,y:0},{x:w-s,y:0},{x:w,y:s},
+{x:w,y:h-s},{x:w-s,y:h},{x:s,y:h},{x:0,y:h-s}];
+}
+const r = c.v;
+if(r < 0.05) return [{x:0,y:0},{x:w,y:0},{x:w,y:h},{x:0,y:h}];
+const pts=[];
+const arc = (cx, cy, a0, a1, n, skipEnd) => {
+n = n||16;
+const last = skipEnd ? n-1 : n;
+for(let i=1; i<=last; i++){
+const a = a0 + (a1-a0)*i/n;
+pts.push({ x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) });
+}
+};
+pts.push({x:r, y:0}, {x:w-r, y:0});
+arc(w-r, r, -Math.PI/2, 0);
+pts.push({x:w, y:h-r});
+arc(w-r, h-r, 0, Math.PI/2);
+pts.push({x:r, y:h});
+arc(r, h-r, Math.PI/2, Math.PI);
+pts.push({x:0, y:r});
+arc(r, r, Math.PI, 1.5*Math.PI, 16, true);
+return pts;
+}
+
+// Außenkontur als SVG-Pfad
+function outlineSVGPath(w, h, c){
+if(c.mode==='chamfer'){
+const s = Math.max(0, c.v);
+return 'M0,'+s+' L'+s+',0 L'+(w-s)+',0 L'+w+','+s+
+' L'+w+','+(h-s)+' L'+(w-s)+','+h+
+' L'+s+','+h+' L0,'+(h-s)+' Z';
+}
+const r = c.v;
+if(r < 0.05) return 'M0,0 L'+w+',0 L'+w+','+h+' L0,'+h+' Z';
+return 'M'+r+',0 L'+(w-r)+',0 A'+r+','+r+' 0 0 1 '+w+','+r+
+' L'+w+','+(h-r)+' A'+r+','+r+' 0 0 1 '+(w-r)+','+h+
+' L'+r+','+h+' A'+r+','+r+' 0 0 1 0,'+(h-r)+
+' L0,'+r+' A'+r+','+r+' 0 0 1 '+r+',0 Z';
+}
+
+/* ---------- 3D (three.js) ---------- */
+let scene, camera, renderer, controls, panelMesh, sharedMat;
+let threeOK = false; // wird beim init3D()-Versuch gesetzt
+
+function slotPath(x, y, r, a, vertical){
+const p = new THREE.Path();
+if(a < 0.05){ p.absarc(x, y, r, 0, Math.PI*2, true); return p; }
+if(vertical){
+p.moveTo(x-r, y-a);
+p.lineTo(x-r, y+a);
+p.absarc(x, y+a, r, Math.PI, 0, true);
+p.lineTo(x+r, y-a);
+p.absarc(x, y-a, r, 0, -Math.PI, true);
+p.closePath();
+return p;
+}
+p.moveTo(x-a, y+r);
+p.lineTo(x+a, y+r);
+p.absarc(x+a, y, r, Math.PI/2, -Math.PI/2, true);
+p.lineTo(x-a, y-r);
+p.absarc(x-a, y, r, -Math.PI/2, -3*Math.PI/2, true);
+p.closePath();
+return p;
+}
+
+function shapeFromData(d){
+const s = new THREE.Shape();
+s.setFromPoints(d.outline.map(p=>new THREE.Vector2(p.x, p.y)));
+for(const c of d.circles){ s.holes.push(slotPath(c.x, c.y, c.r, c.a||0, c.vertical)); }
+for(const poly of d.polys){
+const p = new THREE.Path();
+p.setFromPoints(poly.map(q=>new THREE.Vector2(q.x, q.y)));
+s.holes.push(p);
+}
+return s;
+}
+
+function extrudeOptions(){
+return { depth: state.thickness, bevelEnabled:false, curveSegments:48 };
+}
+
+function init3D(){
+if(typeof THREE === 'undefined'){
+throw new Error('three.js konnte nicht geladen werden (keine Internetverbindung / CDN blockiert?)');
+}
+const holder = document.getElementById('view3d');
+renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(holder.clientWidth||800, holder.clientHeight||600);
+holder.appendChild(renderer.domElement);
+
+scene = new THREE.Scene();
+scene.background = new THREE.Color(0x10151d);
+
+camera = new THREE.PerspectiveCamera(45, 1, 0.5, 8000);
+camera.position.set(300, 260, 320);
+
+controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.maxPolarAngle = Math.PI * 0.53;
+// Mindest-/Maximalabstand setzen: ohne minDistance (Standard 0) kann man beliebig nah an
+// eine Ecke heranzoomen, bis die interne Kugelkoordinaten-Berechnung von OrbitControls bei
+// Abstand~0 numerisch entartet (NaN) - das pflanzt sich über den Render-Loop fort und lässt
+// die Vorschau einfrieren/abstürzen. 3mm ist nah genug zum Begutachten von Details, aber
+// fern genug, um diese Entartung zuverlässig zu vermeiden.
+controls.minDistance = 3;
+controls.maxDistance = 5000;
+
+const hemi = new THREE.HemisphereLight(0xcfe0ff, 0x2a3140, 0.85);
+const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+dir.position.set(150, 320, 220);
+const fill = new THREE.DirectionalLight(0x88aaff, 0.25);
+fill.position.set(-180, 80, -140);
+scene.add(hemi, dir, fill);
+
+const grid = new THREE.GridHelper(1200, 40, 0x31405c, 0x1c2433);
+grid.position.y = -0.01;
+scene.add(grid);
+
+sharedMat = new THREE.MeshStandardMaterial({ color: state.materialColor, metalness: 0.55, roughness: 0.42, side: THREE.DoubleSide });
+
+const ro = new ResizeObserver(resize);
+ro.observe(holder);
+function resize(){
+try{
+const w = holder.clientWidth, h = holder.clientHeight;
+if(!w || !h) return;
+renderer.setSize(w, h);
+camera.aspect = w/h;
+camera.updateProjectionMatrix();
+}catch(e){}
+}
+
+(function loop(){
+requestAnimationFrame(loop);
+try{
+// Sicherheitsnetz: falls Kamera oder Ziel durch irgendeine Interaktion doch einmal einen
+// ungültigen (NaN/Infinity) Zustand erreichen sollten, auf eine sichere Position
+// zurücksetzen statt dauerhaft ein eingefrorenes/schwarzes Bild zu zeigen.
+const p = camera.position, t = controls.target;
+const bad = !isFinite(p.x)||!isFinite(p.y)||!isFinite(p.z)||!isFinite(t.x)||!isFinite(t.y)||!isFinite(t.z);
+if(bad){
+t.set(0,0,0);
+p.set(300,260,320);
+controls.update();
+}
+controls.update();
+renderer.render(scene, camera);
+}catch(e){ /* Renderfehler ignorieren, Loop am Leben lassen */ }
+})();
+}
+
+function rebuild3D(d){
+if(!threeOK) return;
+const geo = new THREE.ExtrudeGeometry(shapeFromData(d), extrudeOptions());
+// Alte Geometrie erst entfernen, wenn die neue erfolgreich gebaut wurde
+if(panelMesh){ scene.remove(panelMesh); panelMesh.geometry.dispose(); panelMesh = null; }
+panelMesh = new THREE.Mesh(geo, sharedMat);
+panelMesh.rotation.x = -Math.PI/2;
+scene.add(panelMesh);
+
+const cx = d.w/2, cz = -d.h/2;
+if(!rebuild3D.fitted){
+// Erster Aufbau: Kamera passend auf die gesamte Platte ausrichten.
+const dist = 1.5 * Math.max(d.w, d.h);
+const dirv = new THREE.Vector3(0.55, 0.7, 0.6).normalize();
+controls.target.set(cx, 0, cz);
+camera.position.copy(controls.target).add(dirv.multiplyScalar(dist));
+rebuild3D.fitted = true;
+} else if(rebuild3D.lastCenter){
+// NUR um die Verschiebung des Panel-Mittelpunkts mitverschieben (falls sich z. B. die
+// Panelgröße geändert hat) - NICHT Ziel/Kamera hart auf die (neue) Mitte zurücksetzen.
+// Sonst geht jede manuelle Verschiebung/Zoom des Nutzers (z. B. an eine Ecke herangezoomt)
+// bei JEDER Wertänderung verloren, auch wenn sich die Panelgröße dabei gar nicht ändert.
+const dx = cx - rebuild3D.lastCenter.x, dz = cz - rebuild3D.lastCenter.z;
+if(dx || dz){
+controls.target.x += dx; controls.target.z += dz;
+camera.position.x += dx; camera.position.z += dz;
+}
+}
+rebuild3D.lastCenter = { x: cx, z: cz };
+}
+
+/* ---------- 2D SVG-Ansicht ---------- */
+function polyPath(pts){ return 'M'+pts.map(q=>q.x.toFixed(3)+','+q.y.toFixed(3)).join(' L ')+' Z'; }
+
+function buildSVG(d){
+const svg = document.getElementById('svg2d');
+const w = d.w, h = d.h;
+let body = '<g transform="scale(1,-1) translate(0,'+(-h)+')">';
+body += '<path d="'+polyPath(d.outline)+'" fill="#2d3a52" stroke="#9db2d4" stroke-width="0.7"/>';
+if(d.circles.length){
+let cd='';
+for(const q of d.circles){
+if((q.a||0) < 0.05){
+cd += 'M'+(q.x-q.r).toFixed(3)+','+q.y.toFixed(3)+
+' A'+q.r.toFixed(3)+','+q.r.toFixed(3)+' 0 1 0 '+(q.x+q.r).toFixed(3)+','+q.y.toFixed(3)+
+' A'+q.r.toFixed(3)+','+q.r.toFixed(3)+' 0 1 0 '+(q.x-q.r).toFixed(3)+','+q.y.toFixed(3)+' Z ';
+} else {
+cd += polyPath(slotPoints(q.x, q.y, q.r, q.a, q.vertical));
+}
+}
+body += '<path d="'+cd+'" fill="#0b0e14" stroke="#5c6f92" stroke-width="0.35"/>';
+}
+if(d.polys.length){
+body += '<path d="'+d.polys.map(polyPath).join('')+'" fill="#0b0e14" stroke="#5c6f92" stroke-width="0.3"/>';
+}
+// Interaktive Overlay-Schicht: EIN Element pro deklariertem Ausschnitt (auch ungültige/
+// überlappende, damit man sie per Drag & Drop in eine gültige Position ziehen kann).
+body += '<g id="cutoutOverlay">';
+state.cutouts.forEach((co, idx)=>{
+const st = (d.cutoutStatus && d.cutoutStatus[idx]) || 'incomplete';
+if(st==='incomplete') return; // noch keine gültige Geometrie zum Anzeigen
+const cls = st==='ok' ? 'co-ok' : 'co-bad';
+if(co.type==='circle'){
+body += '<circle class="co-drag '+cls+'" data-cutout-i="'+idx+'" cx="'+co.x.toFixed(3)+'" cy="'+co.y.toFixed(3)+'" r="'+co.r.toFixed(3)+'"/>';
+} else {
+const pts = cutoutShape(co);
+if(pts) body += '<path class="co-drag '+cls+'" data-cutout-i="'+idx+'" d="'+polyPath(pts)+'"/>';
+}
+});
+body += '</g>';
+body += '</g>';
+body += '<text x="'+(w/2)+'" y="'+(h+16)+'" text-anchor="middle">'+fmt1(w)+' mm</text>';
+body += '<text x="-6" y="'+(h/2)+'" text-anchor="middle" transform="rotate(-90 -6 '+(h/2)+')">'+fmt1(h)+' mm</text>';
+svg.setAttribute('viewBox', '-16 -10 '+(w+32)+' '+(h+34));
+svg.innerHTML = body;
+}
+
+/* ---------- STL-Export (ASCII) ---------- */
+function geometryToSTL(geo){
+const g = geo.index ? geo.toNonIndexed() : geo;
+const pos = g.attributes.position;
+const n = pos.count/3;
+const parts = new Array(n);
+for(let t=0; t<n; t++){
+const i = t*3;
+const ax=pos.getX(i), ay=pos.getY(i), az=pos.getZ(i);
+const bx=pos.getX(i+1), by=pos.getY(i+1), bz=pos.getZ(i+1);
+const cx=pos.getX(i+2), cy=pos.getY(i+2), cz=pos.getZ(i+2);
+const u1=bx-ax, u2=by-ay, u3=bz-az;
+const v1=cx-ax, v2=cy-ay, v3=cz-az;
+let nx=u2*v3-u3*v2, ny=u3*v1-u1*v3, nz=u1*v2-u2*v1;
+const L=Math.hypot(nx,ny,nz)||1; nx/=L; ny/=L; nz/=L;
+parts[t] =
+'facet normal '+nx.toFixed(6)+' '+ny.toFixed(6)+' '+nz.toFixed(6)+'\n'+
+'outer loop\n'+
+'vertex '+ax.toFixed(4)+' '+ay.toFixed(4)+' '+az.toFixed(4)+'\n'+
+'vertex '+bx.toFixed(4)+' '+by.toFixed(4)+' '+bz.toFixed(4)+'\n'+
+'vertex '+cx.toFixed(4)+' '+cy.toFixed(4)+' '+cz.toFixed(4)+'\n'+
+'endloop\nendfacet\n';
+}
+return 'solid rack_panel\n'+parts.join('')+'endsolid rack_panel\n';
+}
+
+/* ---------- DXF-Export (R12-kompatibel) ---------- */
+function dataToDXF(d){
+const E=[];
+E.push(dxfPolyline(d.outline));
+for(const q of d.circles){
+if((q.a||0) < 0.05) E.push(dxfCircle(q.x, q.y, q.r));
+else E.push(dxfPolyline(slotPoints(q.x, q.y, q.r, q.a, q.vertical)));
+}
+for(const p of d.polys) E.push(dxfPolyline(p));
+// Bewusst per String-Konkatenation statt Array.join('\n') zusammengesetzt:
+// jeder Baustein verwaltet seine eigenen Zeilenumbrüche bereits selbst konsistent
+// (jede Gruppencode/Wert-Paarzeile einzeln) - ein zusätzliches join('\n') dazwischen
+// hätte doppelte Leerzeilen erzeugt, die DXF-Reader als ungültigen Gruppencode ablehnen.
+const header = '999\nCover-Designer (10-Zoll-Rack) - DocBigslab\n'
++ '0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n9\n$INSUNITS\n70\n4\n0\nENDSEC\n';
+const entities = '0\nSECTION\n2\nENTITIES\n' + E.join('') + '0\nENDSEC\n';
+const footer = '0\nEOF\n';
+return header + entities + footer;
+}
+function dxfPolyline(pts){
+let s = '0\nPOLYLINE\n8\n0\n66\n1\n70\n1\n10\n0\n20\n0\n30\n0\n';
+for(const p of pts) s += '0\nVERTEX\n8\n0\n10\n'+p.x.toFixed(4)+'\n20\n'+p.y.toFixed(4)+'\n30\n0\n';
+s += '0\nSEQEND\n8\n0\n';
+return s;
+}
+function dxfCircle(x, y, r){
+return '0\nCIRCLE\n8\n0\n10\n'+x.toFixed(4)+'\n20\n'+y.toFixed(4)+'\n30\n0\n40\n'+r.toFixed(4)+'\n';
+}
+
+/* ---------- Hilfsfunktionen UI ---------- */
+const $ = id => document.getElementById(id);
+function fmt1(n){ return String(Math.round(n*100)/100).replace('.', t('decimalSep')); }
+
+function download(name, text){
+const blob = new Blob([text], { type:'application/octet-stream' });
+const a = document.createElement('a');
+a.href = URL.createObjectURL(blob);
+a.download = name;
+document.body.appendChild(a);
+a.click();
+setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+function fname(){
+if(state.mode==='free') return 'coverpanel_'+Math.round(state.panelWidth)+'x'+Math.round(panelH())+'_'+state.pattern;
+return 'rackpanel_'+String(state.sizeU).replace('.','_')+'U_'+state.pattern;
+}
+
+let toastTimer=null;
+function toast(msg){
+const t=$('toast'); t.textContent=msg; t.classList.add('show');
+clearTimeout(toastTimer);
+toastTimer=setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// Baut den Konfigurations-Link als reinen String zusammen - unabhängig davon, ob die
+// Adresszeile selbst aktualisiert werden konnte (bei file:// z. B. nicht, siehe
+// syncURLNow()). So funktioniert "Konfigurationslink kopieren" immer, auch lokal.
+function configURL(){
+return location.href.split('?')[0] + '?p=' + encodeURIComponent(JSON.stringify(state));
+}
+function syncURLNow(){
+// Bei lokal per file:// geöffneten Dateien blockieren Browser history.replaceState()
+// aus Sicherheitsgründen (jede file://-URL gilt als eigener, isolierter Ursprung) - das
+// wirft dabei KEINEN regulären JS-Fehler (das try/catch greift also nicht), sondern gibt
+// nur eine Sicherheitswarnung direkt in der Konsole aus. Daher hier von vornherein
+// überspringen, statt es erst zu versuchen und die Konsole zuzuspammen. Das Teilen-Feature
+// selbst funktioniert trotzdem weiter, siehe configURL().
+if(location.protocol==='file:') return;
+try{ history.replaceState(null, '', '?p='+encodeURIComponent(JSON.stringify(state))); }catch(e){ /* Sicherheitsbeschränkungen etc. – ignorieren */ }
+}
+let urlTimer=null;
+function syncURL(){ clearTimeout(urlTimer); urlTimer = setTimeout(syncURLNow, 400); }
+
+/* ---------- Info-Chips ---------- */
+// Vom Nutzer weggeklickte Warnhinweise (Text -> dauerhaft ausgeblendet, bis sich der
+// Warntext selbst ändert, z. B. weil sich eine Anzahl darin geändert hat).
+const dismissedWarnings = new Set();
+function updateInfo(d){
+const h = panelH();
+const warns=[];
+if(d.skippedCutouts) warns.push(t('warnCutoutsIgnored', {n: d.skippedCutouts}));
+if(state.mode!=='free' && state.holesEnabled){
+const xs=[state.panelWidth/2-state.holeRowSpacing/2, state.panelWidth/2+state.holeRowSpacing/2];
+if(xs[0]<0 || xs[1]>state.panelWidth) warns.push(t('warnHoleRowsOutside'));
+}
+if(d.w>=MAX_PANEL || h>=MAX_PANEL) warns.push(t('warnPanelMax'));
+
+const chips=[t('chipDims', {h: fmt1(h), w: fmt1(d.w), t: fmt1(state.thickness)})];
+if(state.mode!=='free'){
+chips.push(d.holesCount + (state.slotFactor>1 ? t('chipSlots', {f: fmt1(state.slotFactor)}) : t('chipHoles')));
+}
+const patternNoun = {hex:t('patternNounHex'), round:t('patternNounRound'), slots:t('patternNounSlots'), bubble:t('patternNounBubble'), voronoi:t('patternNounVoronoi')}[state.pattern];
+if(d.hexCount && patternNoun) chips.push(d.hexCount+' '+patternNoun);
+if(state.cutouts.length) chips.push(state.cutouts.length+t('chipCutouts'));
+
+const uniq=[...new Set(warns)].filter(w => !dismissedWarnings.has(w));
+if(d.hexCount>1500){
+const mw = t('warnManyCells');
+if(!uniq.includes(mw) && !dismissedWarnings.has(mw)) uniq.push(mw);
+}
+const chipsEl=$('info');
+chipsEl.innerHTML = chips.map(c=>'<span class="chip">'+c+'</span>').join('') +
+uniq.map(w=>'<span class="chip warn">⚠ '+w+'<button class="chip-close" data-warn="'+encodeURIComponent(w)+'" title="'+t('titleDismiss')+'">✕</button></span>').join('');
+}
+
+/* ---------- Gesamtaufbau bei Änderung ---------- */
+let timer=null;
+function scheduleRebuild(){ clearTimeout(timer); timer=setTimeout(rebuild, 90); }
+
+function rebuild(){
+let d = null;
+try{
+d = buildData();
+}catch(err){
+console.error('Geometrie-Fehler:', err);
+toast(t('toastInvalidConfig', {msg: err.message}));
+syncURL();
+return;
+}
+if(threeOK){
+try{ rebuild3D(d); }
+catch(err){
+console.error('3D-Rebuild-Fehler:', err);
+threeOK = false;
+toast(t('toast3dDisabled', {msg: err.message}));
+show2DOnly();
+}
+}
+try{ buildSVG(d); }
+catch(err){ console.error('2D-Rebuild-Fehler:', err); toast(t('toast2dFailed', {msg: err.message})); }
+try{ updateInfo(d); }
+catch(err){ console.error('Info-Fehler:', err); }
+syncURL();
+}
+
+/* ---------- UI-Synchronisation ---------- */
+function setRangePair(id, v){ $(id).value=v; $(id+'N').value=v; }
+function setSeg(id, v){ document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.toggle('on', b.dataset.v===v)); }
+
+function toggleHexOpts(){
+const p = state.pattern;
+['hexOpts','hexWebRow','hexOrientRow'].forEach(i=>$(i).style.display = p==='hex' ? '' : 'none');
+['roundDRow','roundGapRow'].forEach(i=>$(i).style.display = p==='round' ? '' : 'none');
+['slotLenRow','slotThickRow','slotGapXRow','slotGapYRow','slotOrientRow'].forEach(i=>$(i).style.display = p==='slots' ? '' : 'none');
+['bubbleMinDRow','bubbleMaxDRow','bubbleGapRow'].forEach(i=>$(i).style.display = p==='bubble' ? '' : 'none');
+['voronoiCountRow','voronoiWallRow'].forEach(i=>$(i).style.display = p==='voronoi' ? '' : 'none');
+$('edgeClipBlock').style.display = (p==='blank' || p==='voronoi') ? 'none' : ''; // Voronoi-Zellen sind durch die Konstruktion bereits immer randscharf
+toggleEdgeClipOpts();
+$('gradientBlock').style.display = p==='blank' ? 'none' : '';
+toggleGradientOpts();
+}
+function toggleEdgeClipOpts(){
+const on = state.edgeClip && state.pattern!=='blank';
+$('edgeClipMinRow').style.display = on ? '' : 'none';
+$('edgeClipMinHint').style.display = on ? '' : 'none';
+}
+function toggleHalfUTopRow(){
+const fracU = state.sizeU - Math.floor(state.sizeU);
+const hasHalfU = Math.abs(fracU - 0.5) < 1e-6;
+$('halfUTopRow').style.display = hasHalfU ? '' : 'none';
+}
+// Blendet je nach Modus (10"-Rack vs. Frei) die jeweils nicht zutreffenden Zeilen/Bereiche
+// ein bzw. aus: im freien Modus gibt es kein U-Raster, keinen Höhe-Abzug und keine
+// Montagebohrungen (die basieren komplett auf dem U-Pitch) - stattdessen ein direktes
+// Höhenfeld. Löcher entstehen dort ausschließlich über individuelle Ausschnitte.
+function toggleModeUI(){
+const free = state.mode==='free';
+setSeg('sizeModeSeg', state.mode);
+$('sizeURow').style.display = free ? 'none' : '';
+$('clearanceRow').style.display = free ? 'none' : '';
+$('panelHeightRow').style.display = free ? '' : 'none';
+$('holesFieldset').style.display = free ? 'none' : '';
+$('panelWidth').max = free ? MAX_PANEL_FREE : MAX_PANEL;
+$('panelWidth').min = free ? MIN_PANEL_FREE : MIN_PANEL_RACK;
+if(!free){
+// Beim Zurückwechseln in den Rack-Modus die typischen 10"-Vorgabewerte (allen voran die
+// Standardbreite 254mm) wiederherstellen, statt einen beliebigen Wert aus dem freien
+// Modus nur in die gültigen Grenzen zu klemmen - sonst könnte z. B. eine im freien Modus
+// gesetzte Breite von 180mm unbemerkt als "Rack-Panel" übernommen werden, obwohl das
+// kein echtes 10"-Rack-Maß ist.
+state.panelWidth = DEFAULTS.panelWidth;
+$('panelWidth').value = state.panelWidth;
+toggleHalfUTopRow();
+}
+}
+function toggleGradientOpts(){
+const on = state.gradientEnabled && state.pattern!=='blank';
+['gradientOpts','gradientOpts2','gradientOpts3'].forEach(i=>$(i).style.display = on ? '' : 'none');
+// Bubble braucht den Seed immer (Zufallsplatzierung), unabhängig vom Gradienten
+$('gradientSeedRow').style.display = ((on && state.gradientMode==='density') || state.pattern==='bubble') ? '' : 'none';
+}
+function toggleCornerRows(){
+$('radiusRow').style.display = state.cornerMode==='radius' ? '' : 'none';
+$('chamferRow').style.display = state.cornerMode==='chamfer' ? '' : 'none';
+}
+function show2DOnly(){
+const tab3d = document.querySelector('.tab[data-view="3d"]');
+if(tab3d){ tab3d.disabled = true; tab3d.title = t('title3dUnavailable'); tab3d.style.opacity = '0.4'; tab3d.style.cursor = 'not-allowed'; tab3d.classList.remove('on'); }
+const tab2d = document.querySelector('.tab[data-view="2d"]');
+if(tab2d) tab2d.classList.add('on');
+$('view3d').style.display = 'none';
+$('view2d').style.display = 'block';
+$('viewHomeBtn').style.display = 'none';
+}
+
+function syncInputs(){
+$('sizeU').value = state.sizeU;
+$('panelWidth').value = state.panelWidth;
+$('panelHeight').value = state.panelHeight;
+toggleModeUI();
+$('panelClearance').value = state.panelClearance;
+setRangePair('thickness', state.thickness);
+$('materialColor').value = state.materialColor;
+setRangePair('cornerRadius', state.cornerRadius);
+setRangePair('cornerChamfer', state.cornerChamfer);
+setSeg('cornerModeSeg', state.cornerMode);
+toggleCornerRows();
+
+setRangePair('hexD', state.hexD);
+setRangePair('hexWeb', state.hexWeb);
+setRangePair('roundD', state.roundD);
+setRangePair('roundGap', state.roundGap);
+setRangePair('slotLen', state.slotLen);
+setRangePair('slotThick', state.slotThick);
+setRangePair('slotGapX', state.slotGapX);
+setRangePair('slotGapY', state.slotGapY);
+setRangePair('bubbleMinD', state.bubbleMinD);
+setRangePair('bubbleMaxD', state.bubbleMaxD);
+setRangePair('bubbleGap', state.bubbleGap);
+setRangePair('voronoiCount', state.voronoiCount);
+setRangePair('voronoiWall', state.voronoiWall);
+setSeg('slotOrientSeg', state.slotVertical ? 'v' : 'h');
+setRangePair('patternMargin', state.patternMargin);
+setRangePair('marginX', state.marginX);
+setRangePair('holeClearance', state.holeClearance);
+
+$('holesEnabled').checked = !!state.holesEnabled;
+$('holeDiameter').value = state.holeDiameter;
+$('slotFactor').value = state.slotFactor;
+$('holeRowSpacing').value = state.holeRowSpacing;
+$('edgeHoleDist').value = state.edgeHoleDist;
+$('boundaryHoles').checked = !!state.boundaryHoles;
+setSeg('halfUTopSeg', state.halfUTop ? '1' : '0');
+toggleHalfUTopRow();
+$('midHoles').checked = !!state.midHoles;
+
+setSeg('patternSeg', state.pattern);
+setSeg('hexOrientSeg', state.hexOrient);
+setSeg('edgeClipSeg', state.edgeClip ? '1' : '0');
+setRangePair('edgeClipMinPct', state.edgeClipMinPct);
+$('gradientEnabled').checked = !!state.gradientEnabled;
+$('gradientDir').value = state.gradientDir;
+setSeg('gradientModeSeg', state.gradientMode);
+setRangePair('gradientStrength', state.gradientStrength);
+$('seed').value = state.seed;
+toggleHexOpts();
+
+renderCutouts();
+}
+
+function bindPair(id, key){
+[id, id+'N'].forEach(elId=>{
+$(elId).addEventListener('input', ()=>{
+try{
+const v = parseFloat($(elId).value);
+if(!isFinite(v)) return;
+state[key]=v;
+$(elId===id ? id+'N' : id).value = $(elId).value;
+scheduleRebuild();
+}catch(e){ console.error(e); }
+});
+});
+}
+
+function bindSingle(id, key, clampMin, clampMax){
+$(id).addEventListener('input', ()=>{
+try{
+let v = parseFloat($(id).value);
+if(!isFinite(v)) return;
+if(clampMin!==undefined) v = Math.min(clampMax, Math.max(clampMin, v));
+state[key]=v;
+scheduleRebuild();
+}catch(e){ console.error(e); }
+});
+}
+
+/* ---------- Ausschnitt-Editor ---------- */
+function cutoutNames(){ return { rect:t('cutoutRect'), circle:t('cutoutCircle'), hex:t('cutoutHex'), poly:t('cutoutPoly') }; }
+
+function renderCutouts(){
+try{
+const list = $('cutoutList');
+list.innerHTML='';
+$('cutoutHint').style.display = state.cutouts.length ? 'none' : '';
+const names = cutoutNames();
+state.cutouts.forEach((c, i)=>{
+const el = document.createElement('div');
+el.className='cutout';
+el.dataset.idx = i;
+const F = (f, label, step) => '<label class="f"><span>'+label+'</span><input type="number" step="'+(step||'1')+
+'" data-i="'+i+'" data-f="'+f+'" value="'+(isFinite(c[f])?c[f]:0)+'"></label>';
+// Polygon-Punkte sind absolute Koordinaten (siehe Hinweistext) -> X/Y-Felder hier nicht sinnvoll
+let fields = c.type==='poly' ? '' : (F('x',t('fieldX')) + F('y',t('fieldY')));
+if(c.type==='rect') fields += F('w',t('fieldW'))+F('h',t('fieldH'))+F('rot','°','15');
+if(c.type==='circle'){
+const lenVal = isFinite(c.len) ? c.len : Math.round(c.r*2*10)/10;
+fields += F('r',t('fieldR'),'0.5')+'<label class="f"><span>'+t('fieldLen')+'</span><input type="number" step="0.5" data-i="'+i+'" data-f="len" value="'+lenVal+'"></label>';
+fields += '<button class="f-orient" data-i="'+i+'" title="'+t('titleOrient')+'">'+(c.vertical?'↕':'↔')+'</button>';
+}
+if(c.type==='hex') fields += F('r',t('fieldR'),'0.5')+F('rot','°','15');
+const polyPart = c.type==='poly' ?
+'<textarea class="co-pts" data-i="'+i+'" data-f="pts" rows="2" placeholder="'+t('placeholderPoly')+'">'+String(c.pts||'')+'</textarea>' : '';
+el.innerHTML = '<div class="co-head"><span class="co-type">'+names[c.type]+'</span>'+
+fields+'<button class="dup" data-i="'+i+'" title="'+t('titleDuplicate')+'">⧉</button>'+
+'<button class="del" data-i="'+i+'" title="'+t('titleRemove')+'">✕</button></div>'+polyPart;
+list.appendChild(el);
+});
+}catch(e){ console.error('renderCutouts-Fehler:', e); }
+}
+
+$('cutoutList').addEventListener('input', e=>{
+try{
+const i = e.target.dataset.i, f = e.target.dataset.f;
+if(i===undefined) return;
+const c = state.cutouts[+i];
+if(!c) return;
+if(f==='pts'){ c.pts = e.target.value; }
+else{
+const v = parseFloat(e.target.value);
+if(isFinite(v)){
+if(f==='len') c.lenTouched = true; // Nutzer hat die Länge bewusst gesetzt -> beim R-Ändern nicht mehr automatisch mitziehen
+if(f==='r' && c.type==='circle' && !c.lenTouched){
+c.len = v*2; // R geändert, Länge noch nie manuell gesetzt -> Kreis bleibt rund
+// L-Feld-Anzeige direkt aktualisieren, ohne die Liste neu zu rendern (sonst
+// verliert das gerade fokussierte R-Feld beim Tippen den Cursor/Fokus).
+const lenInput = e.target.closest('.cutout').querySelector('input[data-f="len"]');
+if(lenInput) lenInput.value = c.len;
+}
+c[f] = v;
+}
+}
+scheduleRebuild();
+}catch(err){ console.error('Ausschnitt-Eingabe:', err); }
+});
+$('cutoutList').addEventListener('click', e=>{
+try{
+if(e.target.classList.contains('f-orient')){
+const i = e.target.dataset.i;
+if(i===undefined) return;
+const c = state.cutouts[+i];
+if(!c) return;
+c.vertical = !c.vertical;
+renderCutouts();
+scheduleRebuild();
+return;
+}
+if(e.target.classList.contains('dup')){
+const i = e.target.dataset.i;
+if(i===undefined) return;
+const orig = state.cutouts[+i];
+if(!orig) return;
+// Flache Kopie mit leichtem Versatz (10mm), damit die Kopie sichtbar getrennt von
+// der Vorlage liegt statt exakt darauf zu überlappen (und dadurch sofort als
+// "blockiert" markiert würde). Neue eindeutige id für React-freie Listen-Updates.
+const copy = Object.assign({}, orig, { x: (orig.x||0)+10, y: (orig.y||0)+10, id: Date.now() });
+if(orig.type==='poly'){
+// Bei Polygonen stecken die eigentlichen Koordinaten im pts-Text, nicht in x/y ->
+// jeden Punkt einzeln um denselben Versatz verschieben.
+const pts = parsePolyPts(orig.pts);
+copy.pts = pts.map(p => (p.x+10)+','+(p.y+10)).join('; ');
+}
+state.cutouts.splice(+i+1, 0, copy);
+renderCutouts();
+scheduleRebuild();
+return;
+}
+if(!e.target.classList.contains('del')) return; // nur der ✕-Button löscht, nicht jedes Feld mit data-i
+const i = e.target.dataset.i;
+if(i===undefined) return;
+state.cutouts.splice(+i, 1);
+renderCutouts();
+scheduleRebuild();
+}catch(err){ console.error('Ausschnitt-Löschung:', err); }
+});
+
+/* ---------- Ausschnitte per Drag & Drop in der 2D-Ansicht verschieben ---------- */
+// Rechnet Bildschirm-Koordinaten (z. B. e.clientX/Y) in mm-Plattenkoordinaten um.
+// Nutzung der CTM des #svg2d-Wurzelelements (bleibt über innerHTML-Neuaufbauten
+// hinweg stabil, anders als die inneren, bei jedem Rebuild neu erzeugten Pfade).
+function svgToMM(clientX, clientY, h){
+const svg = $('svg2d');
+const ctm = svg.getScreenCTM();
+if(!ctm) return {x:0,y:0};
+const pt = svg.createSVGPoint();
+pt.x = clientX; pt.y = clientY;
+const loc = pt.matrixTransform(ctm.inverse());
+return { x: loc.x, y: h - loc.y }; // y-Flip: SVG ist Y-runter, Plattenkoordinaten sind Y-hoch
+}
+// Aktualisiert die X/Y-Felder bzw. das Polygon-Textfeld in der Seitenleiste live,
+// ohne die ganze Liste neu zu rendern (würde sonst Fokus/Scroll zerstören).
+function updateCutoutSidebarLive(idx){
+const el = document.querySelector('#cutoutList .cutout[data-idx="'+idx+'"]');
+if(!el) return;
+const c = state.cutouts[idx];
+if(!c) return;
+if(c.type==='poly'){
+const ta = el.querySelector('textarea[data-f="pts"]');
+if(ta) ta.value = c.pts;
+} else {
+const xi = el.querySelector('input[data-f="x"]');
+const yi = el.querySelector('input[data-f="y"]');
+if(xi) xi.value = Math.round(c.x*100)/100;
+if(yi) yi.value = Math.round(c.y*100)/100;
+}
+}
+
+let dragState = null;
+$('svg2d').addEventListener('pointerdown', e=>{
+const el = e.target.closest('.co-drag');
+if(!el) return;
+const idx = +el.dataset.cutoutI;
+const c = state.cutouts[idx];
+if(!c) return;
+const h = panelH();
+const mm = svgToMM(e.clientX, e.clientY, h);
+if(c.type==='poly'){
+dragState = { idx, isPoly:true, startMM: mm, startPts: parsePolyPts(c.pts) };
+} else {
+dragState = { idx, isPoly:false, offX: mm.x-(c.x||0), offY: mm.y-(c.y||0) };
+}
+el.classList.add('dragging');
+try{ $('svg2d').setPointerCapture(e.pointerId); }catch(err){}
+e.preventDefault();
+});
+$('svg2d').addEventListener('pointermove', e=>{
+if(!dragState) return;
+const c = state.cutouts[dragState.idx];
+if(!c) return;
+const h = panelH();
+const mm = svgToMM(e.clientX, e.clientY, h);
+if(dragState.isPoly){
+const dx = mm.x - dragState.startMM.x, dy = mm.y - dragState.startMM.y;
+c.pts = dragState.startPts.map(p => (p.x+dx).toFixed(2)+','+(p.y+dy).toFixed(2)).join('; ');
+} else {
+c.x = mm.x - dragState.offX;
+c.y = mm.y - dragState.offY;
+}
+updateCutoutSidebarLive(dragState.idx);
+try{ buildSVG(buildData()); }catch(err){ console.error('Drag-Vorschau-Fehler:', err); }
+});
+function endDrag(e){
+if(!dragState) return;
+dragState = null;
+try{ $('svg2d').releasePointerCapture(e.pointerId); }catch(err){}
+scheduleRebuild(); // volle Aktualisierung inkl. 3D, Info-Chips, Konfigurationslink
+}
+$('svg2d').addEventListener('pointerup', endDrag);
+$('svg2d').addEventListener('pointercancel', endDrag);
+
+document.querySelectorAll('.addbtn[data-add]').forEach(b=>b.addEventListener('click', ()=>{
+try{
+const t = b.dataset.add, h = panelH();
+const base = { x: Math.round(state.panelWidth/2), y: Math.round(h/2) };
+const c = t==='rect' ? Object.assign({ w:60, h:20, rot:0 }, base) :
+t==='circle' ? Object.assign({ r:12, len:24, vertical:false }, base) :
+t==='hex' ? Object.assign({ r:10, rot:0 }, base) :
+Object.assign({ pts:'' }, base);
+c.type = t; c.id = Date.now();
+state.cutouts.push(c);
+renderCutouts();
+scheduleRebuild();
+}catch(err){ console.error('Ausschnitt-Erstellung:', err); }
+}));
+
+/* ---------- Export / Link / Reset ---------- */
+$('expSTL').addEventListener('click', ()=>{
+try{
+const d = buildData();
+const geo = new THREE.ExtrudeGeometry(shapeFromData(d), extrudeOptions());
+download(fname()+'.stl', geometryToSTL(geo));
+toast(t('toastSTLExported', {n: Math.round(geo.attributes.position.count/3).toLocaleString(lang==='en'?'en-US':'de-DE')}));
+}catch(e){ console.error(e); toast(t('toastSTLFailed', {msg: e.message})); }
+});
+
+$('expDXF').addEventListener('click', ()=>{
+try{
+const d = buildData();
+download(fname()+'.dxf', dataToDXF(d));
+toast(t('toastDXFExported'));
+}catch(e){ console.error(e); toast(t('toastDXFFailed', {msg: e.message})); }
+});
+
+$('shareBtn').addEventListener('click', async ()=>{
+syncURLNow();
+const url = configURL();
+try{ await navigator.clipboard.writeText(url); toast(t('toastLinkCopied')); }
+catch(e){ prompt('Konfigurationslink kopieren:', url); }
+});
+
+$('resetBtn').addEventListener('click', ()=>{
+state = Object.assign({}, DEFAULTS, { cutouts: [] });
+syncInputs();
+scheduleRebuild();
+});
+
+/* ---------- Ansichts-Tab & Größen-Select ---------- */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
+if(t.classList.contains('viewhome')) return; // eigener Handler weiter unten
+if(t.dataset.view==='3d' && !threeOK) return; // 3D nicht verfügbar -> Klick ignorieren
+document.querySelectorAll('.tab').forEach(x=>{ if(!x.classList.contains('viewhome')) x.classList.remove('on'); });
+t.classList.add('on');
+const is3d = t.dataset.view==='3d';
+$('view3d').style.display = is3d ? 'block' : 'none';
+$('view2d').style.display = is3d ? 'none' : 'block';
+$('viewHomeBtn').style.display = is3d ? '' : 'none';
+if(!is3d) buildSVG(buildData()); // 2D immer frisch rendern
+}));
+$('info').addEventListener('click', e=>{
+if(!e.target.classList.contains('chip-close')) return;
+const w = decodeURIComponent(e.target.dataset.warn||'');
+if(w) dismissedWarnings.add(w);
+e.target.closest('.chip').remove();
+});
+$('viewHomeBtn').addEventListener('click', ()=>{
+if(!threeOK) return;
+rebuild3D.fitted = false; // erzwingt beim nächsten Rebuild die ursprüngliche Kamera-Ausrichtung
+rebuild3D(buildData());
+});
+
+/* ---------- Sprachumschaltung ---------- */
+document.querySelectorAll('#langSwitch button').forEach(b=>b.addEventListener('click', ()=>{
+if(b.dataset.lang===lang) return;
+lang = b.dataset.lang;
+try{ localStorage.setItem(LANG_KEY, lang); }catch(e){ /* z. B. file:// oder Privatmodus - ignorieren */ }
+applyI18n();
+initSizeSelect();
+$('sizeU').value = state.sizeU;
+renderCutouts();
+rebuild();
+}));
+
+function initSizeSelect(){
+const sel = $('sizeU');
+const prevValue = sel.value;
+sel.innerHTML = '';
+for(let v=0.5; v<=MAX_U+0.001; v+=0.5){
+const o = document.createElement('option');
+o.value = v;
+o.textContent = v.toFixed(1).replace('.', t('decimalSep'))+' U';
+sel.appendChild(o);
+}
+if(prevValue) sel.value = prevValue;
+}
+initSizeSelect();
+
+$('sizeU').addEventListener('change', e=>{ state.sizeU = Math.min(MAX_U, parseFloat(e.target.value)); toggleHalfUTopRow(); scheduleRebuild(); });
+document.querySelectorAll('#sizeModeSeg button').forEach(b=>b.addEventListener('click', ()=>{
+if(b.dataset.v===state.mode) return;
+state.mode = b.dataset.v;
+toggleModeUI();
+scheduleRebuild();
+}));
+$('holesEnabled').addEventListener('change', e=>{ state.holesEnabled = e.target.checked; scheduleRebuild(); });
+$('midHoles').addEventListener('change', e=>{ state.midHoles = e.target.checked; scheduleRebuild(); });
+document.querySelectorAll('#halfUTopSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.halfUTop = b.dataset.v==='1'; setSeg('halfUTopSeg', b.dataset.v); scheduleRebuild();
+}));
+$('boundaryHoles').addEventListener('change', e=>{ state.boundaryHoles = e.target.checked; scheduleRebuild(); });
+
+document.querySelectorAll('#patternSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.pattern = b.dataset.v; setSeg('patternSeg', state.pattern); toggleHexOpts(); scheduleRebuild();
+}));
+document.querySelectorAll('#hexOrientSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.hexOrient = b.dataset.v; setSeg('hexOrientSeg', state.hexOrient); scheduleRebuild();
+}));
+document.querySelectorAll('#slotOrientSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.slotVertical = b.dataset.v==='v'; setSeg('slotOrientSeg', b.dataset.v); scheduleRebuild();
+}));
+document.querySelectorAll('#edgeClipSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.edgeClip = b.dataset.v==='1'; setSeg('edgeClipSeg', b.dataset.v); toggleEdgeClipOpts(); scheduleRebuild();
+}));
+$('gradientEnabled').addEventListener('change', e=>{
+state.gradientEnabled = e.target.checked; toggleGradientOpts(); scheduleRebuild();
+});
+$('gradientDir').addEventListener('change', e=>{ state.gradientDir = e.target.value; scheduleRebuild(); });
+document.querySelectorAll('#gradientModeSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.gradientMode = b.dataset.v; setSeg('gradientModeSeg', state.gradientMode); toggleGradientOpts(); scheduleRebuild();
+}));
+bindPair('gradientStrength', 'gradientStrength');
+bindSingle('seed', 'seed');
+$('seedShuffle').addEventListener('click', ()=>{
+state.seed = Math.floor(Math.random()*1000000);
+$('seed').value = state.seed;
+scheduleRebuild();
+});
+document.querySelectorAll('#cornerModeSeg button').forEach(b=>b.addEventListener('click', ()=>{
+state.cornerMode = b.dataset.v; setSeg('cornerModeSeg', state.cornerMode); toggleCornerRows(); scheduleRebuild();
+}));
+document.querySelectorAll('.addbtn[data-ws]').forEach(b=>b.addEventListener('click', ()=>{
+state.holeRowSpacing = parseFloat(b.dataset.ws);
+$('holeRowSpacing').value = state.holeRowSpacing;
+scheduleRebuild();
+}));
+
+bindPair('thickness', 'thickness'); bindPair('cornerRadius', 'cornerRadius'); bindPair('cornerChamfer', 'cornerChamfer');
+$('materialColor').addEventListener('input', e=>{
+state.materialColor = e.target.value;
+if(sharedMat) sharedMat.color.set(state.materialColor); // nur Material aktualisieren, keine Geometrie-Neuberechnung nötig
+syncURL();
+});
+bindPair('hexD', 'hexD'); bindPair('hexWeb', 'hexWeb'); bindPair('patternMargin', 'patternMargin'); bindPair('holeClearance', 'holeClearance');
+bindPair('roundD', 'roundD'); bindPair('roundGap', 'roundGap');
+bindPair('slotLen', 'slotLen'); bindPair('slotThick', 'slotThick'); bindPair('slotGapX', 'slotGapX'); bindPair('slotGapY', 'slotGapY');
+bindPair('bubbleMinD', 'bubbleMinD'); bindPair('bubbleMaxD', 'bubbleMaxD'); bindPair('bubbleGap', 'bubbleGap');
+bindPair('voronoiCount', 'voronoiCount'); bindPair('voronoiWall', 'voronoiWall');
+bindPair('edgeClipMinPct', 'edgeClipMinPct');
+bindPair('marginX', 'marginX');
+// Plattenbreite/-höhe: Ober- UND Untergrenze hängen vom Modus ab (Rack: 100-300mm
+// Druckbett, Frei: 10-1000mm) -> eigene Bindung statt bindSingle() mit fest eingefrorenen
+// Grenzen.
+$('panelWidth').addEventListener('input', ()=>{
+try{
+let v = parseFloat($('panelWidth').value);
+if(!isFinite(v)) return;
+const free = state.mode==='free';
+state.panelWidth = Math.min(free ? MAX_PANEL_FREE : MAX_PANEL, Math.max(free ? MIN_PANEL_FREE : MIN_PANEL_RACK, v));
+scheduleRebuild();
+}catch(e){ console.error(e); }
+});
+$('panelHeight').addEventListener('input', ()=>{
+try{
+let v = parseFloat($('panelHeight').value);
+if(!isFinite(v)) return;
+state.panelHeight = Math.min(MAX_PANEL_FREE, Math.max(MIN_PANEL_FREE, v));
+scheduleRebuild();
+}catch(e){ console.error(e); }
+});
+bindSingle('panelClearance', 'panelClearance', 0, 3);
+bindSingle('holeDiameter', 'holeDiameter', 5, 7);
+bindSingle('slotFactor', 'slotFactor', 1, 3);
+bindSingle('holeRowSpacing', 'holeRowSpacing', 20, 254);
+bindSingle('edgeHoleDist', 'edgeHoleDist', 0, 20);
+
+/* ---------- Start ---------- */
+try{
+init3D();
+threeOK = true;
+}catch(err){
+console.error('3D-Initialisierung fehlgeschlagen, falle auf 2D zurück:', err);
+threeOK = false;
+}
+syncInputs();
+if(!threeOK) show2DOnly();
+applyI18n();
+rebuild();
+</script>
+</body>
+</html>
